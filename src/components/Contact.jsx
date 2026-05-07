@@ -10,6 +10,14 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Safety check for keys
+    if (!import.meta.env.VITE_EMAILJS_PUBLIC_KEY) {
+      console.error("EmailJS Keys are missing in your environment variables!");
+      setStatus('error');
+      return;
+    }
+
     setStatus('sending');
 
     emailjs.sendForm(
@@ -19,10 +27,12 @@ const Contact = () => {
       import.meta.env.VITE_EMAILJS_PUBLIC_KEY
     )
     .then((result) => {
+        console.log("Email Sent Successfully!", result.text);
         setStatus('success');
         formRef.current.reset();
         setTimeout(() => setStatus('idle'), 5000);
     }, (error) => {
+        console.error("EmailJS Error Detailed:", error);
         setStatus('error');
         setTimeout(() => setStatus('idle'), 5000);
     });
