@@ -3,10 +3,12 @@ import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageSquare, CheckCircle, AlertCircle } from 'lucide-react';
 import { personalInfo } from '../data/portfolio';
 import emailjs from '@emailjs/browser';
+import SuccessModal from './SuccessModal';
 
 const Contact = () => {
   const formRef = useRef();
   const [status, setStatus] = useState('idle'); // idle, sending, success, error
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,20 +30,25 @@ const Contact = () => {
     )
     .then((result) => {
         console.log("Email Sent Successfully!", result.text);
-        alert("Success! Your message has been sent to Mehedi.");
         setStatus('success');
         formRef.current.reset();
-        setTimeout(() => setStatus('idle'), 5000);
+        setShowSuccess(true);
     }, (error) => {
         console.error("EmailJS Error Detailed:", error);
-        alert("Failed to send! Error: " + (error.text || error.message || "Unknown Error"));
         setStatus('error');
         setTimeout(() => setStatus('idle'), 5000);
     });
   };
 
+  const handleModalClose = () => {
+    setShowSuccess(false);
+    window.location.reload();
+  };
+
   return (
     <section id="contact" className="section-padding bg-white relative overflow-hidden">
+      <SuccessModal isOpen={showSuccess} onClose={handleModalClose} />
+      
       <div className="container-custom relative z-10">
         <div className="grid lg:grid-cols-12 gap-16 items-start">
           {/* Left Side: Info */}
