@@ -28,11 +28,13 @@ const Contact = () => {
     )
     .then((result) => {
         console.log("Email Sent Successfully!", result.text);
+        alert("Success! Your message has been sent to Mehedi.");
         setStatus('success');
         formRef.current.reset();
         setTimeout(() => setStatus('idle'), 5000);
     }, (error) => {
         console.error("EmailJS Error Detailed:", error);
+        alert("Failed to send! Error: " + (error.text || error.message || "Unknown Error"));
         setStatus('error');
         setTimeout(() => setStatus('idle'), 5000);
     });

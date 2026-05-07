@@ -36,6 +36,7 @@ const HireModal = ({ isOpen, onClose }) => {
     )
     .then((result) => {
         console.log("Hire Email Sent Successfully!", result.text);
+        alert("Success! Your hiring inquiry has been sent.");
         setStatus('success');
         setTimeout(() => {
           setStatus('idle');
@@ -43,6 +44,7 @@ const HireModal = ({ isOpen, onClose }) => {
         }, 3000);
     }, (error) => {
         console.error("EmailJS Hire Error Detailed:", error);
+        alert("Hire Form Error: " + (error.text || error.message || "Unknown Error"));
         setStatus('error');
         setTimeout(() => setStatus('idle'), 5000);
     });
