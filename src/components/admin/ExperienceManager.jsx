@@ -1,23 +1,30 @@
 import { useState, useEffect } from 'react';
-import { Plus, Pencil, Trash2, Loader2, Save, X, Briefcase } from 'lucide-react';
 import { portfolioAPI } from '../../api';
+import { Plus, Pencil, Trash2, Save, Loader2, X, Briefcase } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ExperienceManager = () => {
-  const [items, setItems] = useState([]);
+  const [experience, setExperience] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [message, setMessage] = useState({ text: '', type: '' });
   const [formData, setFormData] = useState({
-    role: '', company: '', period: '', type: 'On-site', icon: 'Briefcase'
+    role: '',
+    company: '',
+    period: '',
+    description: '',
+    order: 0
   });
 
   useEffect(() => {
-    fetchItems();
+    fetchExperience();
   }, []);
 
-  const fetchItems = async () => {
+  const fetchExperience = async () => {
     try {
       const { data } = await portfolioAPI.getExperience();
-      setItems(data);
+      setExperience(data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -25,69 +32,55 @@ const ExperienceManager = () => {
     }
   };
 
-  const [message, setMessage] = useState({ type: '', text: '' });
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage({ type: '', text: '' });
     try {
       if (editingId) {
         await portfolioAPI.updateExperience(editingId, formData);
-        setMessage({ type: 'success', text: 'Experience updated!' });
+        setMessage({ text: 'Experience updated!', type: 'success' });
       } else {
         await portfolioAPI.addExperience(formData);
-        setMessage({ type: 'success', text: 'Experience added!' });
+        setMessage({ text: 'Experience added!', type: 'success' });
       }
-      setEditingId(null);
-      setFormData({ role: '', company: '', period: '', type: 'On-site', icon: 'Briefcase' });
-      fetchItems();
+      fetchExperience();
+      setShowModal(false);
+      resetForm();
     } catch (err) {
-      setMessage({ type: 'error', text: 'Failed to save experience.' });
+      setMessage({ text: 'Failed to save.', type: 'error' });
     } finally {
       setLoading(false);
+      setTimeout(() => setMessage({ text: '', type: '' }), 3000);
     }
   };
 
   const handleEdit = (item) => {
-    setEditingId(item._id);
     setFormData(item);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setEditingId(item._id);
+    setShowModal(true);
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Delete this entry?')) {
-      await portfolioAPI.deleteExperience(id);
-      fetchItems();
+      try {
+        await portfolioAPI.deleteExperience(id);
+        fetchExperience();
+        setMessage({ text: 'Deleted.', type: 'success' });
+      } catch (err) {
+        setMessage({ text: 'Delete failed.', type: 'error' });
+      }
+      setTimeout(() => setMessage({ text: '', type: '' }), 3000);
     }
   };
 
-  if (loading && items.length === 0) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-sky-600" size={40} /></div>;
+  const resetForm = () => {
+    setFormData({ role: '', company: '', period: '', description: '', order: 0 });
+    setEditingId(null);
+  };
+
+  if (loading && experience.length === 0) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-sky-600" size={40} /></div>;
 
   return (
-    <div className="space-y-12">
-      <section className="bg-white p-8 md:p-12 rounded-[2.5rem] border border-slate-100 shadow-sm">
-        <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3">
-          {editingId ? 'Edit Experience' : 'Add New Experience'}
-        </h3>
-
-        {message.text && (
-          <div className={`mb-8 p-4 rounded text-xs font-bold border ${
-            message.type === 'success' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
-          }`}>
-            {message.text}
-          </div>
-        )}
-        
-        <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
-          <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Role / Job Title</label>
-            <input 
-              required
-              value={formData.role}
-              onChange={(e) => setFormData({...formData, role: e.target.value})}
-              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded outline-none transition-all text-sm font-medium"
-              placeholder="e.g. Full Stack Developer"
             />
           </div>
           <div className="space-y-1.5">

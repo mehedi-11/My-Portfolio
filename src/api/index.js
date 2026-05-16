@@ -36,6 +36,11 @@ export const portfolioAPI = {
   addEducation: (data) => api.post('/education', data),
   updateEducation: (id, data) => api.put(`/education/${id}`, data),
   deleteEducation: (id) => api.delete(`/education/${id}`),
+
+  getSkills: () => api.get('/skills'),
+  addSkill: (data) => api.post('/skills', data),
+  updateSkill: (id, data) => api.put(`/skills/${id}`, data),
+  deleteSkill: (id) => api.delete(`/skills/${id}`),
 };
 
 export const messageAPI = {
@@ -46,6 +51,11 @@ export const messageAPI = {
   getProposals: () => api.get('/hire'),
   deleteProposal: (id) => api.delete(`/hire/${id}`),
   sendProposal: (data) => api.post('/hire', data),
+};
+
+export const notifyAPI = {
+  getCounts: () => api.get('/notifications/count'),
+  markRead: (type) => api.post('/notifications/mark-read', { type }),
 };
 
 export default api;

@@ -11,7 +11,8 @@ const Project = require('./models/Project');
 const Experience = require('./models/Experience');
 const Education = require('./models/Education');
 const Contact = require('./models/Contact');
-const Hire = require('./models/Hire');
+const Skill = require('./models/Skill');
+const LoginAttempt = require('./models/LoginAttempt');
 
 const app = express();
 app.use(express.json());
@@ -24,13 +25,22 @@ mongoose.connect(process.env.MONGODB_URI)
 // --- Auth Routes ---
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
   try {
     const user = await User.findOne({ username });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!user) {
+      await new LoginAttempt({ username, ip, success: false }).save();
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!isMatch) {
+      await new LoginAttempt({ username, ip, success: false }).save();
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
 
+    await new LoginAttempt({ username, ip, success: true }).save();
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
     res.json({ token, username: user.username });
   } catch (err) {
@@ -135,6 +145,25 @@ app.delete('/api/education/:id', auth, async (req, res) => {
   res.json({ message: 'Deleted' });
 });
 
+// Skills
+app.get('/api/skills', async (req, res) => {
+  const data = await Skill.find().sort('order');
+  res.json(data);
+});
+app.post('/api/skills', auth, async (req, res) => {
+  const entry = new Skill(req.body);
+  await entry.save();
+  res.status(201).json(entry);
+});
+app.put('/api/skills/:id', auth, async (req, res) => {
+  const updated = await Skill.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(updated);
+});
+app.delete('/api/skills/:id', auth, async (req, res) => {
+  await Skill.findByIdAndDelete(req.params.id);
+  res.json({ message: 'Deleted' });
+});
+
 // Contacts & Hire (Public POST, Protected GET/DELETE)
 app.post('/api/contacts', async (req, res) => {
   const newContact = new Contact(req.body);
@@ -162,6 +191,32 @@ app.get('/api/hire', auth, async (req, res) => {
 app.delete('/api/hire/:id', auth, async (req, res) => {
   await Hire.findByIdAndDelete(req.params.id);
   res.json({ message: 'Deleted' });
+});
+
+// Notifications
+app.get('/api/notifications/count', auth, async (req, res) => {
+  try {
+    const [messages, proposals, security] = await Promise.all([
+      Contact.countDocuments({ read: false }),
+      Hire.countDocuments({ read: false }),
+      LoginAttempt.countDocuments({ success: false, read: false })
+    ]);
+    res.json({ total: messages + proposals + security, messages, proposals, security });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/api/notifications/mark-read', auth, async (req, res) => {
+  const { type } = req.body;
+  try {
+    if (type === 'messages') await Contact.updateMany({ read: false }, { read: true });
+    if (type === 'proposals') await Hire.updateMany({ read: false }, { read: true });
+    if (type === 'security') await LoginAttempt.updateMany({ read: false }, { read: true });
+    res.json({ message: 'Marked as read' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // --- Seed Admin User (Temporary/One-time) ---

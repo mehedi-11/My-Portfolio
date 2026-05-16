@@ -1,34 +1,35 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  LayoutDashboard, 
-  Briefcase, 
-  GraduationCap, 
-  Layers, 
-  MessageSquare, 
-  UserPlus, 
-  LogOut,
-  Settings,
-  ChevronRight,
-  Bell,
-  X
-} from 'lucide-react';
+import { LayoutDashboard, Briefcase, GraduationCap, Layers, MessageSquare, UserPlus, LogOut, Settings, ChevronRight, Bell, X, ShieldCheck, Code } from 'lucide-react';
 import ProjectManager from '../components/admin/ProjectManager';
 import ExperienceManager from '../components/admin/ExperienceManager';
 import EducationManager from '../components/admin/EducationManager';
 import MessageManager from '../components/admin/MessageManager';
 import ProposalManager from '../components/admin/ProposalManager';
 import ProfileManager from '../components/admin/ProfileManager';
+import SkillManager from '../components/admin/SkillManager';
 import Overview from '../components/admin/Overview';
+import { notifyAPI } from '../api';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [adminName, setAdminName] = useState('Admin');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [notifications, setNotifications] = useState({ total: 0, messages: 0, proposals: 0, security: 0 });
 
   useEffect(() => {
     setAdminName(localStorage.getItem('adminUser') || 'Admin');
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000); // Check every 30s
+    return () => clearInterval(interval);
   }, []);
+
+  const fetchNotifications = async () => {
+    try {
+      const { data } = await notifyAPI.getCounts();
+      setNotifications(data);
+    } catch (err) {
+      console.error("Failed to fetch notifications");
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -37,16 +38,17 @@ const Dashboard = () => {
   };
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: LayoutDashboard, component: Overview },
-    { id: 'projects', label: 'Projects', icon: Layers, component: ProjectManager },
-    { id: 'experience', label: 'Experience', icon: Briefcase, component: ExperienceManager },
+    { id: 'overview', label: 'Dashboard', icon: LayoutDashboard, component: Overview },
     { id: 'education', label: 'Education', icon: GraduationCap, component: EducationManager },
-    { id: 'messages', label: 'Inquiries', icon: MessageSquare, component: MessageManager },
-    { id: 'proposals', label: 'Proposals', icon: UserPlus, component: ProposalManager },
-    { id: 'profile', label: 'Settings', icon: Settings, component: ProfileManager },
+    { id: 'experience', label: 'Experience', icon: Briefcase, component: ExperienceManager },
+    { id: 'projects', label: 'Projects', icon: Layers, component: ProjectManager },
+    { id: 'skills', label: 'Skills', icon: Code, component: SkillManager },
+    { id: 'messages', label: 'Contact Msg', icon: MessageSquare, component: MessageManager, badge: notifications.messages },
+    { id: 'proposals', label: 'Hire Msg', icon: UserPlus, component: ProposalManager, badge: notifications.proposals },
+    { id: 'settings', label: 'Settings', icon: Settings, component: ProfileManager },
   ];
 
-  const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || ProjectManager;
+  const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || Overview;
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex relative overflow-hidden">
@@ -84,7 +86,7 @@ const Dashboard = () => {
               <button
                 key={tab.id}
                 onClick={() => { setActiveTab(tab.id); setIsSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded text-[13px] font-bold transition-all ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded text-[13px] font-bold transition-all relative ${
                   activeTab === tab.id 
                   ? 'bg-slate-900 text-white shadow-lg shadow-slate-200' 
                   : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50'
@@ -92,6 +94,11 @@ const Dashboard = () => {
               >
                 <tab.icon size={18} />
                 {tab.label}
+                {tab.badge > 0 && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-sky-600 text-[10px] text-white flex items-center justify-center rounded-full border-2 border-white">
+                    {tab.badge}
+                  </span>
+                )}
                 {activeTab === tab.id && <ChevronRight size={14} className="ml-auto opacity-50" />}
               </button>
             ))}
@@ -117,16 +124,36 @@ const Dashboard = () => {
             <button onClick={() => setIsSidebarOpen(true)} className="lg:hidden p-2 text-slate-400 hover:text-slate-900 bg-slate-50 rounded">
                <LayoutDashboard size={18} />
             </button>
-            <div>
+            <div className="flex items-center gap-2">
               <h2 className="text-base font-black text-slate-900 tracking-tighter capitalize">{activeTab}</h2>
+              {activeTab === 'overview' && (
+                 <span className="text-[9px] font-black bg-emerald-50 text-emerald-500 px-2 py-0.5 rounded-full uppercase tracking-widest">Live System</span>
+              )}
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="w-9 h-9 rounded bg-slate-50 flex items-center justify-center text-slate-400 hover:text-sky-600 transition-all relative">
-              <Bell size={18} />
-              <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-sky-600 rounded-full border-2 border-white" />
-            </button>
+            <div className="relative group">
+              <button className="w-9 h-9 rounded bg-slate-50 flex items-center justify-center text-slate-400 hover:text-sky-600 transition-all">
+                <Bell size={18} />
+                {notifications.total > 0 && (
+                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white animate-pulse" />
+                )}
+              </button>
+              
+              {/* Notification Tooltip/Dropdown Placeholder */}
+              {notifications.total > 0 && (
+                <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded border border-slate-100 shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all z-50 p-4">
+                  <h4 className="text-xs font-black text-slate-900 mb-3 border-b border-slate-50 pb-2">New Alerts</h4>
+                  <div className="space-y-2">
+                    {notifications.messages > 0 && <p className="text-[11px] font-bold text-slate-600 flex justify-between">New Messages <span className="text-sky-600">{notifications.messages}</span></p>}
+                    {notifications.proposals > 0 && <p className="text-[11px] font-bold text-slate-600 flex justify-between">New Proposals <span className="text-sky-600">{notifications.proposals}</span></p>}
+                    {notifications.security > 0 && <p className="text-[11px] font-bold text-red-500 flex justify-between">Security Alerts <span className="text-red-500">{notifications.security}</span></p>}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="flex items-center gap-3 pl-4 border-l border-slate-100">
                <div className="text-right hidden sm:block">
                   <p className="text-[12px] font-black text-slate-900 leading-none">{adminName}</p>
@@ -149,7 +176,7 @@ const Dashboard = () => {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              <ActiveComponent />
+              <ActiveComponent fetchNotifications={fetchNotifications} />
             </motion.div>
           </AnimatePresence>
         </div>

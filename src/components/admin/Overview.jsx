@@ -15,18 +15,20 @@ const Overview = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [projects, experience, messages, proposals] = await Promise.all([
+        const [projects, experience, messages, proposals, skills] = await Promise.all([
           portfolioAPI.getProjects(),
           portfolioAPI.getExperience(),
           messageAPI.getContacts(),
-          messageAPI.getProposals()
+          messageAPI.getProposals(),
+          portfolioAPI.getSkills()
         ]);
         
         setStats({
           projects: projects.data.length,
           experience: experience.data.length,
           messages: messages.data.length,
-          proposals: proposals.data.length
+          proposals: proposals.data.length,
+          skills: skills.data.length
         });
       } catch (err) {
         console.error("Failed to fetch stats", err);
@@ -39,8 +41,8 @@ const Overview = () => {
 
   const cards = [
     { title: 'Total Projects', value: stats.projects, icon: Layers, color: 'text-sky-600', bg: 'bg-sky-50' },
-    { title: 'Work Experience', value: stats.experience, icon: Briefcase, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { title: 'New Inquiries', value: stats.messages, icon: MessageSquare, color: 'text-violet-600', bg: 'bg-violet-50' },
+    { title: 'Technical Skills', value: stats.skills, icon: ArrowUpRight, color: 'text-violet-600', bg: 'bg-violet-50' },
+    { title: 'New Inquiries', value: stats.messages, icon: MessageSquare, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { title: 'Job Proposals', value: stats.proposals, icon: UserPlus, color: 'text-amber-600', bg: 'bg-amber-50' },
   ];
 

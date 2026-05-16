@@ -1,30 +1,29 @@
 import { useState, useEffect } from 'react';
 import { portfolioAPI } from '../../api';
-import { Plus, Pencil, Trash2, Save, Loader2, X, GraduationCap } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, Loader2, X, Code } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const EducationManager = () => {
-  const [education, setEducation] = useState([]);
+const SkillManager = () => {
+  const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState({ text: '', type: '' });
   const [formData, setFormData] = useState({
-    degree: '',
-    school: '',
-    period: '',
-    description: '',
+    name: '',
+    category: 'Frontend',
+    level: 80,
     order: 0
   });
 
   useEffect(() => {
-    fetchEducation();
+    fetchSkills();
   }, []);
 
-  const fetchEducation = async () => {
+  const fetchSkills = async () => {
     try {
-      const { data } = await portfolioAPI.getEducation();
-      setEducation(data);
+      const { data } = await portfolioAPI.getSkills();
+      setSkills(data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -37,13 +36,13 @@ const EducationManager = () => {
     setLoading(true);
     try {
       if (editingId) {
-        await portfolioAPI.updateEducation(editingId, formData);
-        setMessage({ text: 'Education updated!', type: 'success' });
+        await portfolioAPI.updateSkill(editingId, formData);
+        setMessage({ text: 'Skill updated!', type: 'success' });
       } else {
-        await portfolioAPI.addEducation(formData);
-        setMessage({ text: 'Education added!', type: 'success' });
+        await portfolioAPI.addSkill(formData);
+        setMessage({ text: 'Skill added!', type: 'success' });
       }
-      fetchEducation();
+      fetchSkills();
       setShowModal(false);
       resetForm();
     } catch (err) {
@@ -61,10 +60,10 @@ const EducationManager = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Delete this entry?')) {
+    if (window.confirm('Delete this skill?')) {
       try {
-        await portfolioAPI.deleteEducation(id);
-        fetchEducation();
+        await portfolioAPI.deleteSkill(id);
+        fetchSkills();
         setMessage({ text: 'Deleted.', type: 'success' });
       } catch (err) {
         setMessage({ text: 'Delete failed.', type: 'error' });
@@ -74,24 +73,24 @@ const EducationManager = () => {
   };
 
   const resetForm = () => {
-    setFormData({ degree: '', school: '', period: '', description: '', order: 0 });
+    setFormData({ name: '', category: 'Frontend', level: 80, order: 0 });
     setEditingId(null);
   };
 
-  if (loading && education.length === 0) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-sky-600" size={40} /></div>;
+  if (loading && skills.length === 0) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-sky-600" size={40} /></div>;
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center mb-2">
         <div>
-          <h3 className="text-lg font-black text-slate-900">Academic History</h3>
-          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">{education.length} Entries found</p>
+          <h3 className="text-lg font-black text-slate-900">Technical Skills</h3>
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">{skills.length} Skills listed</p>
         </div>
         <button 
           onClick={() => { resetForm(); setShowModal(true); }}
           className="bg-slate-900 text-white px-4 py-2.5 rounded font-black text-[11px] uppercase tracking-widest flex items-center gap-2 hover:bg-sky-600 transition-all shadow-lg"
         >
-          <Plus size={16} /> Add Education
+          <Plus size={16} /> Add Skill
         </button>
       </div>
 
@@ -109,25 +108,28 @@ const EducationManager = () => {
           <table className="w-full text-left">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100">
-                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Degree & School</th>
-                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Period</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Skill Name</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Category</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Proficiency</th>
                 <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {education.map((item) => (
+              {skills.map((item) => (
                 <tr key={item._id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-slate-50 rounded flex items-center justify-center text-slate-400"><GraduationCap size={18} /></div>
-                      <div className="flex flex-col">
-                        <span className="text-[13px] font-bold text-slate-900">{item.degree}</span>
-                        <span className="text-[11px] text-sky-600 font-bold">{item.school}</span>
-                      </div>
+                      <div className="w-8 h-8 bg-slate-50 rounded flex items-center justify-center text-slate-400"><Code size={14} /></div>
+                      <span className="text-[13px] font-bold text-slate-900">{item.name}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">{item.period}</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-100 px-2 py-1 rounded">{item.category}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="w-24 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                       <div className="bg-sky-600 h-full" style={{ width: `${item.level}%` }} />
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -157,53 +159,48 @@ const EducationManager = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-xl bg-white rounded shadow-2xl overflow-hidden"
+              className="relative w-full max-w-md bg-white rounded shadow-2xl overflow-hidden"
             >
               <div className="flex items-center justify-between p-6 border-b border-slate-100">
-                <h4 className="text-lg font-black text-slate-900">{editingId ? 'Edit Education' : 'Add Education'}</h4>
+                <h4 className="text-lg font-black text-slate-900">{editingId ? 'Edit Skill' : 'Add Skill'}</h4>
                 <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-900"><X size={20} /></button>
               </div>
 
               <form onSubmit={handleSubmit} className="p-8">
                 <div className="grid gap-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Degree</label>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Skill Name</label>
                     <input 
                       required
-                      value={formData.degree}
-                      onChange={(e) => setFormData({...formData, degree: e.target.value})}
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none focus:bg-white focus:border-sky-500 transition-all text-[13px] font-medium"
-                      placeholder="e.g. B.Sc. in Computer Science"
+                      placeholder="e.g. React.js"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">School / University</label>
-                    <input 
-                      required
-                      value={formData.school}
-                      onChange={(e) => setFormData({...formData, school: e.target.value})}
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Category</label>
+                    <select 
+                      value={formData.category}
+                      onChange={(e) => setFormData({...formData, category: e.target.value})}
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none focus:bg-white focus:border-sky-500 transition-all text-[13px] font-medium"
-                      placeholder="University Name"
-                    />
+                    >
+                      <option>Frontend</option>
+                      <option>Backend</option>
+                      <option>Mobile</option>
+                      <option>Tools</option>
+                      <option>Other</option>
+                    </select>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Period</label>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Proficiency (%)</label>
                     <input 
+                      type="number"
                       required
-                      value={formData.period}
-                      onChange={(e) => setFormData({...formData, period: e.target.value})}
+                      value={formData.level}
+                      onChange={(e) => setFormData({...formData, level: e.target.value})}
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none focus:bg-white focus:border-sky-500 transition-all text-[13px] font-medium"
-                      placeholder="e.g. 2018 - 2022"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Description</label>
-                    <textarea 
-                      required
-                      value={formData.description}
-                      onChange={(e) => setFormData({...formData, description: e.target.value})}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none focus:bg-white focus:border-sky-500 transition-all text-[13px] font-medium h-24"
-                      placeholder="Key achievements..."
+                      min="0" max="100"
                     />
                   </div>
                 </div>
@@ -232,4 +229,4 @@ const EducationManager = () => {
   );
 };
 
-export default EducationManager;
+export default SkillManager;
