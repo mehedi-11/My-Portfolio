@@ -42,13 +42,13 @@ const ProfileManager = () => {
         </h3>
 
         {success && (
-          <div className="mb-8 p-4 bg-emerald-50 text-emerald-600 rounded-2xl text-xs font-bold flex items-center gap-3 border border-emerald-100">
+          <div className="mb-8 p-4 bg-emerald-50 text-emerald-600 rounded text-xs font-bold flex items-center gap-3 border border-emerald-100">
             <CheckCircle size={18} /> Credentials updated successfully!
           </div>
         )}
 
         {error && (
-          <div className="mb-8 p-4 bg-red-50 text-red-600 rounded-2xl text-xs font-bold flex items-center gap-3 border border-red-100">
+          <div className="mb-8 p-4 bg-red-50 text-red-600 rounded text-xs font-bold flex items-center gap-3 border border-red-100">
              {error}
           </div>
         )}
@@ -63,7 +63,7 @@ const ProfileManager = () => {
                 type="text"
                 value={formData.username}
                 onChange={(e) => setFormData({...formData, username: e.target.value})}
-                className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none transition-all text-sm font-medium"
+                className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded outline-none transition-all text-sm font-medium"
               />
             </div>
           </div>
@@ -81,7 +81,7 @@ const ProfileManager = () => {
                     value={formData.password}
                     onChange={(e) => setFormData({...formData, password: e.target.value})}
                     placeholder="Leave blank to keep current"
-                    className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none transition-all text-sm font-medium"
+                    className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded outline-none transition-all text-sm font-medium"
                   />
                 </div>
               </div>
@@ -94,7 +94,7 @@ const ProfileManager = () => {
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                     placeholder="Repeat password"
-                    className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none transition-all text-sm font-medium"
+                    className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded outline-none transition-all text-sm font-medium"
                   />
                 </div>
               </div>
@@ -103,7 +103,7 @@ const ProfileManager = () => {
 
           <button 
             disabled={loading}
-            className="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-sky-600 transition-all shadow-xl shadow-slate-100 mt-8"
+            className="w-full py-5 bg-slate-900 text-white rounded font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-sky-600 transition-all shadow-xl shadow-slate-100 mt-8"
           >
             {loading ? <Loader2 className="animate-spin" size={18} /> : (
               <><Save size={18} /> Update Credentials</>

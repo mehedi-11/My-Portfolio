@@ -33,10 +33,10 @@ const AdminLogin = () => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200 p-8 md:p-12 border border-slate-100"
+        className="w-full max-w-md bg-white rounded shadow-2xl shadow-slate-200 p-8 md:p-12 border border-slate-100"
       >
         <div className="text-center mb-10">
-          <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 shadow-xl shadow-slate-200">
+          <div className="w-16 h-16 bg-slate-900 rounded flex items-center justify-center text-white mx-auto mb-6 shadow-xl shadow-slate-200">
             <Lock size={32} />
           </div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Admin Panel.</h1>
@@ -44,7 +44,7 @@ const AdminLogin = () => {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-2xl text-xs font-bold flex items-center gap-2 border border-red-100">
+          <div className="mb-6 p-4 bg-red-50 text-red-600 rounded text-xs font-bold flex items-center gap-2 border border-red-100">
             {error}
           </div>
         )}
@@ -60,7 +60,7 @@ const AdminLogin = () => {
                 value={credentials.username}
                 onChange={(e) => setCredentials({...credentials, username: e.target.value})}
                 placeholder="Enter username"
-                className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:border-sky-500 outline-none transition-all text-sm font-medium text-slate-900"
+                className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded focus:bg-white focus:border-sky-500 outline-none transition-all text-sm font-medium text-slate-900"
               />
             </div>
           </div>
@@ -75,7 +75,7 @@ const AdminLogin = () => {
                 value={credentials.password}
                 onChange={(e) => setCredentials({...credentials, password: e.target.value})}
                 placeholder="••••••••"
-                className="w-full pl-14 pr-14 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:border-sky-500 outline-none transition-all text-sm font-medium text-slate-900"
+                className="w-full pl-14 pr-14 py-4 bg-slate-50 border border-slate-100 rounded focus:bg-white focus:border-sky-500 outline-none transition-all text-sm font-medium text-slate-900"
               />
               <button
                 type="button"
@@ -89,7 +89,7 @@ const AdminLogin = () => {
 
           <button 
             disabled={loading}
-            className="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-sky-600 transition-all shadow-xl shadow-slate-200 mt-8"
+            className="w-full py-5 bg-slate-900 text-white rounded font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-sky-600 transition-all shadow-xl shadow-slate-200 mt-8"
           >
             {loading ? <Loader2 className="animate-spin" size={20} /> : (
               <>Sign In <ArrowRight size={18} /></>

@@ -71,7 +71,7 @@ const Dashboard = () => {
         <div className="p-6 flex flex-col h-full">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-black text-sm">M</div>
+              <div className="w-8 h-8 bg-slate-900 rounded-sm flex items-center justify-center text-white font-black text-sm">M</div>
               <span className="text-lg font-black text-slate-900 tracking-tighter">Admin<span className="text-sky-600">Panel.</span></span>
             </div>
             <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden p-2 text-slate-400 hover:text-slate-900">
@@ -84,7 +84,7 @@ const Dashboard = () => {
               <button
                 key={tab.id}
                 onClick={() => { setActiveTab(tab.id); setIsSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] font-bold transition-all ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded text-[13px] font-bold transition-all ${
                   activeTab === tab.id 
                   ? 'bg-slate-900 text-white shadow-lg shadow-slate-200' 
                   : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50'
@@ -100,7 +100,7 @@ const Dashboard = () => {
           <div className="pt-6 border-t border-slate-50">
             <button 
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] font-bold text-red-400 hover:text-red-500 hover:bg-red-50 transition-all"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded text-[13px] font-bold text-red-400 hover:text-red-500 hover:bg-red-50 transition-all"
             >
               <LogOut size={18} />
               Sign Out
@@ -114,7 +114,7 @@ const Dashboard = () => {
         {/* Header */}
         <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40 px-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button onClick={() => setIsSidebarOpen(true)} className="lg:hidden p-2 text-slate-400 hover:text-slate-900 bg-slate-50 rounded-lg">
+            <button onClick={() => setIsSidebarOpen(true)} className="lg:hidden p-2 text-slate-400 hover:text-slate-900 bg-slate-50 rounded">
                <LayoutDashboard size={18} />
             </button>
             <div>
@@ -123,7 +123,7 @@ const Dashboard = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="w-9 h-9 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:text-sky-600 transition-all relative">
+            <button className="w-9 h-9 rounded bg-slate-50 flex items-center justify-center text-slate-400 hover:text-sky-600 transition-all relative">
               <Bell size={18} />
               <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-sky-600 rounded-full border-2 border-white" />
             </button>
@@ -132,7 +132,7 @@ const Dashboard = () => {
                   <p className="text-[12px] font-black text-slate-900 leading-none">{adminName}</p>
                   <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest mt-1">Super Admin</p>
                </div>
-               <div className="w-9 h-9 rounded-lg bg-sky-100 flex items-center justify-center text-sky-600 font-black text-sm">
+               <div className="w-9 h-9 rounded bg-sky-100 flex items-center justify-center text-sky-600 font-black text-sm">
                  {adminName[0]}
                </div>
             </div>

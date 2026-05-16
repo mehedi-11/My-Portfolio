@@ -72,7 +72,7 @@ const ExperienceManager = () => {
         </h3>
 
         {message.text && (
-          <div className={`mb-8 p-4 rounded-2xl text-xs font-bold border ${
+          <div className={`mb-8 p-4 rounded text-xs font-bold border ${
             message.type === 'success' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
           }`}>
             {message.text}
@@ -86,7 +86,7 @@ const ExperienceManager = () => {
               required
               value={formData.role}
               onChange={(e) => setFormData({...formData, role: e.target.value})}
-              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none transition-all text-sm font-medium"
+              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded outline-none transition-all text-sm font-medium"
               placeholder="e.g. Full Stack Developer"
             />
           </div>
@@ -96,7 +96,7 @@ const ExperienceManager = () => {
               required
               value={formData.company}
               onChange={(e) => setFormData({...formData, company: e.target.value})}
-              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none transition-all text-sm font-medium"
+              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded outline-none transition-all text-sm font-medium"
               placeholder="e.g. Unilink Global"
             />
           </div>
@@ -106,7 +106,7 @@ const ExperienceManager = () => {
               required
               value={formData.period}
               onChange={(e) => setFormData({...formData, period: e.target.value})}
-              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none transition-all text-sm font-medium"
+              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded outline-none transition-all text-sm font-medium"
               placeholder="e.g. 2022 - Present"
             />
           </div>
@@ -115,7 +115,7 @@ const ExperienceManager = () => {
             <select 
               value={formData.type}
               onChange={(e) => setFormData({...formData, type: e.target.value})}
-              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none transition-all text-sm font-medium"
+              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded outline-none transition-all text-sm font-medium"
             >
               <option value="On-site">On-site</option>
               <option value="Remote">Remote</option>
@@ -124,11 +124,11 @@ const ExperienceManager = () => {
           </div>
 
           <div className="flex gap-4 md:col-span-2 mt-4">
-             <button type="submit" className="px-10 py-5 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3">
+             <button type="submit" className="px-10 py-5 bg-slate-900 text-white rounded font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3">
                <Save size={18} /> {editingId ? 'Update' : 'Add'}
              </button>
              {editingId && (
-               <button type="button" onClick={() => { setEditingId(null); setFormData({ role: '', company: '', period: '', type: 'On-site', icon: 'Briefcase' }); }} className="px-10 py-5 bg-slate-100 text-slate-400 rounded-2xl font-black text-xs uppercase tracking-[0.2em]">Cancel</button>
+               <button type="button" onClick={() => { setEditingId(null); setFormData({ role: '', company: '', period: '', type: 'On-site', icon: 'Briefcase' }); }} className="px-10 py-5 bg-slate-100 text-slate-400 rounded font-black text-xs uppercase tracking-[0.2em]">Cancel</button>
              )}
           </div>
         </form>
@@ -136,9 +136,9 @@ const ExperienceManager = () => {
 
       <div className="space-y-4">
         {items.map((item) => (
-          <div key={item._id} className="bg-white p-6 rounded-2xl border border-slate-100 flex items-center justify-between group">
+          <div key={item._id} className="bg-white p-6 rounded border border-slate-100 flex items-center justify-between group">
              <div className="flex items-center gap-5">
-                <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-sky-600 group-hover:text-white transition-all">
+                <div className="w-12 h-12 bg-slate-50 rounded flex items-center justify-center text-slate-400 group-hover:bg-sky-600 group-hover:text-white transition-all">
                   <Briefcase size={20} />
                 </div>
                 <div>
@@ -147,8 +147,8 @@ const ExperienceManager = () => {
                 </div>
              </div>
              <div className="flex gap-2">
-                <button onClick={() => handleEdit(item)} className="w-9 h-9 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:text-sky-600 transition-all"><Pencil size={16} /></button>
-                <button onClick={() => handleDelete(item._id)} className="w-9 h-9 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:text-red-500 transition-all"><Trash2 size={16} /></button>
+                <button onClick={() => handleEdit(item)} className="w-9 h-9 rounded bg-slate-50 flex items-center justify-center text-slate-400 hover:text-sky-600 transition-all"><Pencil size={16} /></button>
+                <button onClick={() => handleDelete(item._id)} className="w-9 h-9 rounded bg-slate-50 flex items-center justify-center text-slate-400 hover:text-red-500 transition-all"><Trash2 size={16} /></button>
              </div>
           </div>
         ))}

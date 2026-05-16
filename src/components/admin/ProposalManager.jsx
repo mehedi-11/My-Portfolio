@@ -40,7 +40,7 @@ const ProposalManager = () => {
       <div className="grid gap-6">
         {proposals.length === 0 && (
           <div className="bg-white p-20 rounded-[2.5rem] border border-slate-100 text-center">
-            <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 mx-auto mb-4">
+            <div className="w-16 h-16 bg-slate-50 rounded flex items-center justify-center text-slate-300 mx-auto mb-4">
               <UserPlus size={32} />
             </div>
             <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">No proposals found</p>
@@ -51,7 +51,7 @@ const ProposalManager = () => {
           <div key={proposal._id} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all group relative">
             <button 
               onClick={() => handleDelete(proposal._id)}
-              className="absolute top-8 right-8 w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all opacity-0 group-hover:opacity-100"
+              className="absolute top-8 right-8 w-10 h-10 rounded bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all opacity-0 group-hover:opacity-100"
             >
               <Trash2 size={18} />
             </button>
@@ -59,21 +59,21 @@ const ProposalManager = () => {
             <div className="flex flex-col md:flex-row gap-8">
               <div className="md:w-1/3 space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400"><Briefcase size={18} /></div>
+                  <div className="w-9 h-9 bg-slate-50 rounded flex items-center justify-center text-slate-400"><Briefcase size={18} /></div>
                   <div>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Company / Org</p>
                     <h4 className="text-sm font-black text-slate-900">{proposal.company}</h4>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400"><DollarSign size={18} /></div>
+                  <div className="w-9 h-9 bg-slate-50 rounded flex items-center justify-center text-slate-400"><DollarSign size={18} /></div>
                   <div>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Expected Salary</p>
                     <p className="text-sm font-bold text-emerald-600">{proposal.salary}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400"><Calendar size={18} /></div>
+                  <div className="w-9 h-9 bg-slate-50 rounded flex items-center justify-center text-slate-400"><Calendar size={18} /></div>
                   <div>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Submitted</p>
                     <p className="text-sm font-bold text-slate-900">{new Date(proposal.createdAt).toLocaleDateString()}</p>
@@ -83,7 +83,7 @@ const ProposalManager = () => {
 
               <div className="flex-1 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-slate-50 md:pl-8">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Key Responsibilities</p>
-                <div className="bg-slate-50 p-6 rounded-2xl">
+                <div className="bg-slate-50 p-6 rounded">
                   <p className="text-sm text-slate-600 font-medium leading-relaxed whitespace-pre-wrap">{proposal.responsibilities}</p>
                 </div>
               </div>
