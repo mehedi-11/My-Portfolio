@@ -13,6 +13,18 @@ const Education = require('./models/Education');
 const Contact = require('./models/Contact');
 const Skill = require('./models/Skill');
 const LoginAttempt = require('./models/LoginAttempt');
+const Settings = require('./models/Settings');
+const ActivityLog = require('./models/ActivityLog');
+
+// Helper to log activity
+const logActivity = async (action, details, category = 'CRUD', req = null) => {
+  try {
+    const ip = req ? (req.headers['x-forwarded-for'] || req.socket.remoteAddress) : 'System';
+    await ActivityLog.create({ action, details, category, ip });
+  } catch (err) {
+    console.error('Logging failed:', err);
+  }
+};
 
 const app = express();
 app.use(express.json());
@@ -41,9 +53,11 @@ app.post('/api/auth/login', async (req, res) => {
     }
 
     await new LoginAttempt({ username, ip, success: true }).save();
+    await logActivity('Logged In', 'Successful admin login', 'Auth', req);
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
     res.json({ token, username: user.username });
   } catch (err) {
+    await logActivity('Failed Login Attempt', `Attempted username: ${username}`, 'Security', req);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -62,6 +76,9 @@ app.put('/api/auth/profile', auth, async (req, res) => {
 
     if (password) {
       user.password = password;
+      await logActivity('Changed Password', 'Admin updated credentials', 'Auth', req);
+    } else {
+      await logActivity('Updated Username', `New username: ${username}`, 'Auth', req);
     }
 
     await user.save();
@@ -96,14 +113,17 @@ app.get('/api/projects', async (req, res) => {
 app.post('/api/projects', auth, async (req, res) => {
   const newProject = new Project(req.body);
   await newProject.save();
+  await logActivity('Added Project', `Title: ${req.body.title}`, 'CRUD', req);
   res.status(201).json(newProject);
 });
 app.put('/api/projects/:id', auth, async (req, res) => {
   const updated = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  await logActivity('Updated Project', `ID: ${req.params.id}`, 'CRUD', req);
   res.json(updated);
 });
 app.delete('/api/projects/:id', auth, async (req, res) => {
   await Project.findByIdAndDelete(req.params.id);
+  await logActivity('Deleted Project', `ID: ${req.params.id}`, 'CRUD', req);
   res.json({ message: 'Deleted' });
 });
 
@@ -115,14 +135,17 @@ app.get('/api/experience', async (req, res) => {
 app.post('/api/experience', auth, async (req, res) => {
   const entry = new Experience(req.body);
   await entry.save();
+  await logActivity('Added Experience', `Role: ${req.body.role}`, 'CRUD', req);
   res.status(201).json(entry);
 });
 app.put('/api/experience/:id', auth, async (req, res) => {
   const updated = await Experience.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  await logActivity('Updated Experience', `ID: ${req.params.id}`, 'CRUD', req);
   res.json(updated);
 });
 app.delete('/api/experience/:id', auth, async (req, res) => {
   await Experience.findByIdAndDelete(req.params.id);
+  await logActivity('Deleted Experience', `ID: ${req.params.id}`, 'CRUD', req);
   res.json({ message: 'Deleted' });
 });
 
@@ -134,14 +157,17 @@ app.get('/api/education', async (req, res) => {
 app.post('/api/education', auth, async (req, res) => {
   const entry = new Education(req.body);
   await entry.save();
+  await logActivity('Added Education', `Degree: ${req.body.degree}`, 'CRUD', req);
   res.status(201).json(entry);
 });
 app.put('/api/education/:id', auth, async (req, res) => {
   const updated = await Education.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  await logActivity('Updated Education', `ID: ${req.params.id}`, 'CRUD', req);
   res.json(updated);
 });
 app.delete('/api/education/:id', auth, async (req, res) => {
   await Education.findByIdAndDelete(req.params.id);
+  await logActivity('Deleted Education', `ID: ${req.params.id}`, 'CRUD', req);
   res.json({ message: 'Deleted' });
 });
 
@@ -153,14 +179,17 @@ app.get('/api/skills', async (req, res) => {
 app.post('/api/skills', auth, async (req, res) => {
   const entry = new Skill(req.body);
   await entry.save();
+  await logActivity('Added Skill', `Name: ${req.body.name}`, 'CRUD', req);
   res.status(201).json(entry);
 });
 app.put('/api/skills/:id', auth, async (req, res) => {
   const updated = await Skill.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  await logActivity('Updated Skill', `ID: ${req.params.id}`, 'CRUD', req);
   res.json(updated);
 });
 app.delete('/api/skills/:id', auth, async (req, res) => {
   await Skill.findByIdAndDelete(req.params.id);
+  await logActivity('Deleted Skill', `ID: ${req.params.id}`, 'CRUD', req);
   res.json({ message: 'Deleted' });
 });
 
@@ -219,7 +248,38 @@ app.post('/api/notifications/mark-read', auth, async (req, res) => {
   }
 });
 
-// --- Seed Admin User (Temporary/One-time) ---
+// Activity Logs
+app.get('/api/activity-logs', auth, async (req, res) => {
+  try {
+    const logs = await ActivityLog.find().sort({ timestamp: -1 }).limit(100);
+    res.json(logs);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Settings
+app.get('/api/settings', async (req, res) => {
+  try {
+    let settings = await Settings.findOne();
+    if (!settings) settings = await Settings.create({});
+    res.json(settings);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.put('/api/settings', auth, async (req, res) => {
+  try {
+    const settings = await Settings.findOneAndUpdate({}, req.body, { upsert: true, new: true });
+    await logActivity('Updated Settings', 'General contact info updated', 'CRUD', req);
+    res.json(settings);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// --- Seed Admin User ---
 app.post('/api/auth/seed', async (req, res) => {
   try {
     const existing = await User.findOne({ username: 'admin' });

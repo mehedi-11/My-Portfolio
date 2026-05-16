@@ -58,4 +58,10 @@ export const notifyAPI = {
   markRead: (type) => api.post('/notifications/mark-read', { type }),
 };
 
+export const settingsAPI = {
+  getSettings: () => api.get('/settings'),
+  updateSettings: (data) => api.put('/settings', data),
+  getActivityLogs: () => api.get('/activity-logs'),
+};
+
 export default api;

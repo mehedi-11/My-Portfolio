@@ -6,10 +6,12 @@ import ExperienceManager from '../components/admin/ExperienceManager';
 import EducationManager from '../components/admin/EducationManager';
 import MessageManager from '../components/admin/MessageManager';
 import ProposalManager from '../components/admin/ProposalManager';
-import ProfileManager from '../components/admin/ProfileManager';
+import SettingsManager from '../components/admin/SettingsManager';
 import SkillManager from '../components/admin/SkillManager';
+import ActivityLog from '../components/admin/ActivityLog';
 import Overview from '../components/admin/Overview';
 import { notifyAPI } from '../api';
+import { ClipboardList } from 'lucide-react';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -47,7 +49,8 @@ const Dashboard = () => {
     { id: 'skills', label: 'Skills', icon: Code, component: SkillManager },
     { id: 'messages', label: 'Contact Msg', icon: MessageSquare, component: MessageManager, badge: notifications.messages },
     { id: 'proposals', label: 'Hire Msg', icon: UserPlus, component: ProposalManager, badge: notifications.proposals },
-    { id: 'settings', label: 'Settings', icon: Settings, component: ProfileManager },
+    { id: 'activity', label: 'Activity Log', icon: ClipboardList, component: ActivityLog },
+    { id: 'settings', label: 'Settings', icon: Settings, component: SettingsManager },
   ];
 
   const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || Overview;
