@@ -163,15 +163,15 @@ const EducationManager = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-xl bg-white rounded shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+              className="relative w-full max-w-sm bg-white rounded shadow-2xl overflow-hidden flex flex-col max-h-[85vh] m-2"
             >
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 flex-shrink-0">
-                <h4 className="text-lg font-black text-slate-900">{editingId ? 'Edit Education' : 'Add Education'}</h4>
-                <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-900"><X size={20} /></button>
+              <div className="flex items-center justify-between p-4 border-b border-slate-100 flex-shrink-0 bg-white">
+                <h4 className="text-sm font-black text-slate-900">{editingId ? 'Edit Education' : 'Add Education'}</h4>
+                <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-900 p-1"><X size={16} /></button>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-1">
-                <div className="grid gap-4">
+              <form onSubmit={handleSubmit} className="p-4 overflow-y-auto custom-scrollbar flex-1 bg-white">
+                <div className="grid gap-3">
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Degree</label>
                     <input 
