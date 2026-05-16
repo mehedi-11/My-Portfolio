@@ -28,7 +28,7 @@ const ProfileManager = () => {
       setSuccess(true);
       setFormData({ ...formData, password: '', confirmPassword: '' });
     } catch (err) {
-      setError('Failed to update profile');
+      setError(err.response?.data?.message || 'Failed to update profile');
     } finally {
       setLoading(false);
     }
