@@ -55,7 +55,13 @@ const EducationManager = () => {
   };
 
   const handleEdit = (item) => {
-    setFormData(item);
+    setFormData({
+      degree: item.degree,
+      school: item.school,
+      period: item.period,
+      description: item.description,
+      order: item.order || 0
+    });
     setEditingId(item._id);
     setShowModal(true);
   };

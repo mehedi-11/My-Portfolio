@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { portfolioAPI } from '../../api';
-import { Plus, Pencil, Trash2, Save, Loader2, X, ExternalLink, Github } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, Loader2, X, ExternalLink, Github, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ProjectManager = () => {
@@ -58,7 +58,16 @@ const ProjectManager = () => {
   };
 
   const handleEdit = (project) => {
-    setFormData(project);
+    setFormData({
+      title: project.title,
+      slug: project.slug,
+      description: project.description,
+      technologies: project.technologies || [],
+      image: project.image || '',
+      live: project.live || '',
+      github: project.github || '',
+      order: project.order || 0
+    });
     setEditingId(project._id);
     setShowModal(true);
   };
@@ -92,7 +101,7 @@ const ProjectManager = () => {
         </div>
         <button 
           onClick={() => { resetForm(); setShowModal(true); }}
-          className="bg-slate-900 text-white px-4 py-2.5 rounded font-black text-[11px] uppercase tracking-widest flex items-center gap-2 hover:bg-sky-600 transition-all shadow-lg shadow-slate-100"
+          className="bg-slate-900 text-white px-4 py-2.5 rounded font-black text-[11px] uppercase tracking-widest flex items-center gap-2 hover:bg-sky-600 transition-all shadow-lg"
         >
           <Plus size={16} /> Add Project
         </button>
@@ -122,7 +131,9 @@ const ProjectManager = () => {
               {projects.map((project) => (
                 <tr key={project._id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-6 py-4">
-                    <img src={project.image} alt="" className="w-12 h-12 rounded object-cover border border-slate-100 bg-white" />
+                    <div className="w-12 h-12 rounded bg-slate-100 overflow-hidden border border-slate-100 flex items-center justify-center">
+                       {project.image ? <img src={project.image} alt="" className="w-full h-full object-cover" /> : <Layers className="text-slate-300" size={20} />}
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
@@ -259,80 +270,7 @@ const ProjectManager = () => {
             </motion.div>
           </div>
         )}
-              value={formData.live}
-              onChange={(e) => setFormData({...formData, live: e.target.value})}
-              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded focus:bg-white focus:border-sky-500 outline-none transition-all text-sm font-medium"
-              placeholder="https://..."
-            />
-          </div>
-          <div className="md:col-span-2 space-y-1.5">
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Image URL</label>
-            <input 
-              value={formData.image}
-              onChange={(e) => setFormData({...formData, image: e.target.value})}
-              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded focus:bg-white focus:border-sky-500 outline-none transition-all text-sm font-medium"
-              placeholder="https://images.unsplash.com/..."
-            />
-          </div>
-
-          <div className="md:col-span-2 space-y-1.5">
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Technologies (Comma separated)</label>
-            <input 
-              value={Array.isArray(formData.technologies) ? formData.technologies.join(', ') : ''}
-              onChange={(e) => setFormData({...formData, technologies: e.target.value.split(',').map(s => s.trim())})}
-              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded focus:bg-white focus:border-sky-500 outline-none transition-all text-sm font-medium"
-              placeholder="React, Node, MongoDB"
-            />
-          </div>
-
-          <div className="flex gap-4 md:col-span-2">
-             <button 
-               type="submit"
-               disabled={loading}
-               className="px-10 py-5 bg-slate-900 text-white rounded font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-sky-600 transition-all shadow-xl shadow-slate-100"
-             >
-               {loading ? <Loader2 className="animate-spin" size={18} /> : <><Save size={18} /> {editingId ? 'Update' : 'Create'} Project</>}
-             </button>
-             {editingId && (
-               <button 
-                 type="button"
-                 onClick={() => { setEditingId(null); setFormData({ title: '', slug: '', description: '', longDescription: '', technologies: [], github: '', live: '', image: '', architecture: [], technicalHighlights: [], features: [] }); }}
-                 className="px-10 py-5 bg-slate-100 text-slate-400 rounded font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-red-50 hover:text-red-500 transition-all"
-               >
-                 <X size={18} /> Cancel
-               </button>
-             )}
-          </div>
-        </form>
-      </section>
-
-      {/* List Section */}
-      <section className="space-y-6">
-        <h3 className="text-xl font-black text-slate-900 flex items-center gap-3">
-          Existing Projects <span className="text-xs px-3 py-1 bg-slate-100 text-slate-400 rounded-full">{projects.length}</span>
-        </h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          {projects.map((project) => (
-            <div key={project._id} className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm group hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300">
-               <div className="flex justify-between items-start mb-6">
-                  <div className="w-14 h-14 rounded bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-sky-50 group-hover:text-sky-600 transition-all overflow-hidden">
-                    {project.image ? <img src={project.image} alt="" className="w-full h-full object-cover" /> : <Layers size={24} />}
-                  </div>
-                  <div className="flex gap-2">
-                    <button onClick={() => handleEdit(project)} className="w-10 h-10 rounded bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-sky-50 hover:text-sky-600 transition-all"><Pencil size={18} /></button>
-                    <button onClick={() => handleDelete(project._id)} className="w-10 h-10 rounded bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all"><Trash2 size={18} /></button>
-                  </div>
-               </div>
-               <h4 className="text-lg font-black text-slate-900 mb-2">{project.title}</h4>
-               <p className="text-sm text-slate-500 font-medium line-clamp-2 mb-6">{project.description}</p>
-               <div className="flex items-center gap-4 pt-6 border-t border-slate-50">
-                  {project.github && <a href={project.github} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-slate-900 transition-colors"><Github size={18} /></a>}
-                  {project.live && <a href={project.live} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-slate-900 transition-colors"><ExternalLink size={18} /></a>}
-               </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      </AnimatePresence>
     </div>
   );
 };
