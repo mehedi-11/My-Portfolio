@@ -44,6 +44,14 @@ export const PortfolioProvider = ({ children }) => {
           });
         }
 
+        console.log("Portfolio Data Loaded:", {
+          projects: projectsRes.data,
+          experience: expRes.data,
+          education: eduRes.data,
+          skills: formattedSkills,
+          personalInfo: settingsRes.data
+        });
+
         setData({
           projects: projectsRes.data || [],
           experience: expRes.data || [],
