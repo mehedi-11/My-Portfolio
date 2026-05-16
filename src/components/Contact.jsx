@@ -6,7 +6,7 @@ import SuccessModal from './SuccessModal';
 
 const Contact = () => {
   const formRef = useRef();
-  const { personalInfo } = usePortfolio();
+  const { personalInfo, loading } = usePortfolio();
   const [status, setStatus] = useState('idle'); // idle, sending, success, error
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -40,6 +40,8 @@ const Contact = () => {
     setStatus('idle');
   };
 
+  if (loading) return null;
+
   return (
     <section id="contact" className="section-padding bg-white relative overflow-hidden">
       <SuccessModal isOpen={showSuccess} onClose={handleModalClose} />
@@ -59,7 +61,7 @@ const Contact = () => {
             </p>
 
             <div className="space-y-6 mb-12">
-               {personalInfo.email && (
+               {personalInfo?.email && (
                  <div className="flex items-center gap-5 group">
                     <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-sky-600 transition-colors">
                       <Mail size={20} />
@@ -71,7 +73,7 @@ const Contact = () => {
                  </div>
                )}
                
-               {personalInfo.phone && (
+               {personalInfo?.phone && (
                  <div className="flex items-center gap-5 group">
                     <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-sky-600 transition-colors">
                       <Phone size={20} />
@@ -83,7 +85,7 @@ const Contact = () => {
                  </div>
                )}
 
-               {personalInfo.whatsapp && (
+               {personalInfo?.whatsapp && (
                  <div className="flex items-center gap-5 group">
                     <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-sky-600 transition-colors">
                       <MessageSquare size={20} />
@@ -95,7 +97,7 @@ const Contact = () => {
                  </div>
                )}
 
-               {personalInfo.address && (
+               {personalInfo?.address && (
                  <div className="flex items-center gap-5 group">
                     <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-sky-600 transition-colors">
                       <MapPin size={20} />
@@ -109,27 +111,27 @@ const Contact = () => {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              {personalInfo.github && (
+              {personalInfo?.github && (
                 <a href={personalInfo.github} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all shadow-sm">
                   <Github size={18} />
                 </a>
               )}
-              {personalInfo.linkedin && (
+              {personalInfo?.linkedin && (
                 <a href={personalInfo.linkedin} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all shadow-sm">
                   <Linkedin size={18} />
                 </a>
               )}
-              {personalInfo.facebook && (
+              {personalInfo?.facebook && (
                 <a href={personalInfo.facebook} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all shadow-sm">
                   <Facebook size={18} />
                 </a>
               )}
-              {personalInfo.instagram && (
+              {personalInfo?.instagram && (
                 <a href={personalInfo.instagram} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all shadow-sm">
                   <Instagram size={18} />
                 </a>
               )}
-              {personalInfo.website && (
+              {personalInfo?.website && (
                 <a href={personalInfo.website} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all shadow-sm">
                   <Globe size={18} />
                 </a>
