@@ -10,7 +10,8 @@ import {
   LogOut,
   Settings,
   ChevronRight,
-  Bell
+  Bell,
+  X
 } from 'lucide-react';
 import ProjectManager from '../components/admin/ProjectManager';
 import ExperienceManager from '../components/admin/ExperienceManager';
