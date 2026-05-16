@@ -25,7 +25,7 @@ const Projects = () => {
             <div className="w-10 h-10 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
             {projects.map((project, index) => {
               const hasGithub = project.github && project.github !== "#";
               const hasLive = project.live && project.live !== "#";
