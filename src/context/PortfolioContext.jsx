@@ -13,7 +13,8 @@ export const PortfolioProvider = ({ children }) => {
       frontend: [],
       backend: [],
       database: [],
-      tools: []
+      tools: [],
+      raw: [] // Keep original objects for title/description
     }
   });
   const [loading, setLoading] = useState(true);
@@ -33,7 +34,8 @@ export const PortfolioProvider = ({ children }) => {
           frontend: [],
           backend: [],
           database: [],
-          tools: []
+          tools: [],
+          raw: skillsRes.data || []
         };
         
         if (skillsRes.data && Array.isArray(skillsRes.data)) {

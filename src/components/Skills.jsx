@@ -5,40 +5,28 @@ import { usePortfolio } from '../context/PortfolioContext';
 const Skills = () => {
   const { skills, loading } = usePortfolio();
   
-  const skillCategories = [
-    { 
-      title: "Frontend Architecture", 
-      icon: Globe, 
-      items: skills?.frontend || [],
-      description: "Crafting beautiful, accessible, and high-performance user interfaces.",
-      color: "from-sky-500 to-sky-600",
-      bg: "bg-sky-50"
-    },
-    { 
-      title: "Backend Engineering", 
-      icon: Terminal, 
-      items: skills?.backend || [],
-      description: "Building scalable server-side logic and robust API infrastructures.",
-      color: "from-indigo-500 to-indigo-600",
-      bg: "bg-indigo-50"
-    },
-    { 
-      title: "Data Management", 
-      icon: Database, 
-      items: skills?.database || [],
-      description: "Designing efficient database schemas and optimizing complex queries.",
-      color: "from-amber-500 to-amber-600",
-      bg: "bg-amber-50"
-    },
-    { 
-      title: "DevOps & Tools", 
-      icon: Wrench, 
-      items: skills?.tools || [],
-      description: "Streamlining development workflows with modern CI/CD tools.",
-      color: "from-emerald-500 to-emerald-600",
-      bg: "bg-emerald-50"
-    },
-  ];
+  // Mapping categories to their icons and styles
+  const categoryConfigs = {
+    frontend: { icon: Globe, color: "from-sky-500 to-sky-600", bg: "bg-sky-50" },
+    backend: { icon: Terminal, color: "from-indigo-500 to-indigo-600", bg: "bg-indigo-50" },
+    database: { icon: Database, color: "from-amber-500 to-amber-600", bg: "bg-amber-50" },
+    tools: { icon: Wrench, color: "from-emerald-500 to-emerald-600", bg: "bg-emerald-50" }
+  };
+
+  // Convert the skills object/array from context into a displayable list
+  // Note: PortfolioContext now provides skills as a categorized object
+  const skillList = Object.keys(skills || {}).map(cat => {
+    const config = categoryConfigs[cat.toLowerCase()] || { icon: Globe, color: "from-slate-500 to-slate-600", bg: "bg-slate-50" };
+    
+    // We need to find the full category object from the backend response if possible
+    // Actually, let's assume we might need to update PortfolioContext to keep the full objects
+    return {
+      category: cat,
+      ...config,
+      // The context currently only stores the items array in the 'skills' object
+      // We might need to adjust this if we want to show dynamic titles/descriptions
+    };
+  });
 
   return (
     <section id="skills" className="section-padding bg-[#fcfcfd]">
@@ -54,42 +42,68 @@ const Skills = () => {
             <p className="text-base text-slate-500 leading-relaxed mb-8">
               I don't just write code; I engineer solutions. My stack is curated for maximum performance, security, and scalability.
             </p>
+            
+            <div className="flex flex-col gap-4">
+               <div className="flex items-center gap-3 group">
+                 <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-sky-600 group-hover:bg-sky-600 group-hover:text-white transition-all">
+                   <ShieldCheck size={20} />
+                 </div>
+                 <p className="font-bold text-sm text-slate-800">Security First Mindset</p>
+               </div>
+               <div className="flex items-center gap-3 group">
+                 <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-sky-600 group-hover:bg-sky-600 group-hover:text-white transition-all">
+                   <Smartphone size={20} />
+                 </div>
+                 <p className="font-bold text-sm text-slate-800">Mobile Responsive Design</p>
+               </div>
+               <div className="flex items-center gap-3 group">
+                 <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-sky-600 group-hover:bg-sky-600 group-hover:text-white transition-all">
+                   <Cpu size={20} />
+                 </div>
+                 <p className="font-bold text-sm text-slate-800">Performance Optimization</p>
+               </div>
+            </div>
           </div>
 
           {/* Skills Grid */}
           <div className="lg:col-span-8">
-            {loading && Object.keys(skills || {}).length === 0 ? (
+            {loading ? (
               <div className="flex justify-center py-20">
                 <div className="w-10 h-10 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
               </div>
             ) : (
               <div className="grid md:grid-cols-2 gap-6">
-                {skillCategories.map((category, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className="group relative bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-sky-100/50 transition-all duration-500 overflow-hidden"
-                  >
-                    <div className={`absolute top-0 right-0 w-24 h-24 ${category.bg} rounded-bl-[80px] -z-0 transition-all duration-500 group-hover:w-full group-hover:h-full group-hover:rounded-none`} />
-                    <div className="relative z-10">
-                      <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
-                        <category.icon size={28} />
+                {/* We need to fetch the raw categories array from context to see titles/descriptions */}
+                {(skills.raw || []).map((category, index) => {
+                  const config = categoryConfigs[category.category.toLowerCase()] || { icon: Globe, color: "from-slate-500 to-slate-600", bg: "bg-slate-50" };
+                  
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      className="group relative bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-sky-100/50 transition-all duration-500 overflow-hidden"
+                    >
+                      <div className={`absolute top-0 right-0 w-24 h-24 ${config.bg} rounded-bl-[80px] -z-0 transition-all duration-500 group-hover:w-full group-hover:h-full group-hover:rounded-none`} />
+                      <div className="relative z-10">
+                        <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${config.color} flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
+                          <config.icon size={28} />
+                        </div>
+                        <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tight">{category.title}</h3>
+                        <p className="text-slate-500 text-xs mb-6 leading-relaxed">{category.description}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {category.items.map((skill, i) => (
+                            <span key={i} className="px-3 py-1.5 bg-slate-50 text-slate-700 text-[9px] font-black uppercase tracking-widest rounded-lg border border-slate-100 group-hover:bg-white transition-colors">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
                       </div>
-                      <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tight">{category.title}</h3>
-                      <p className="text-slate-500 text-xs mb-6 leading-relaxed">{category.description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {category.items.map((skill, i) => (
-                          <span key={i} className="px-3 py-1.5 bg-slate-50 text-slate-700 text-[9px] font-black uppercase tracking-widest rounded-lg border border-slate-100 group-hover:bg-white transition-colors">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  );
+                })}
               </div>
             )}
           </div>
