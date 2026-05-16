@@ -19,9 +19,10 @@ import EducationManager from '../components/admin/EducationManager';
 import MessageManager from '../components/admin/MessageManager';
 import ProposalManager from '../components/admin/ProposalManager';
 import ProfileManager from '../components/admin/ProfileManager';
+import Overview from '../components/admin/Overview';
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState('projects');
+  const [activeTab, setActiveTab] = useState('overview');
   const [adminName, setAdminName] = useState('Admin');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -36,6 +37,7 @@ const Dashboard = () => {
   };
 
   const tabs = [
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard, component: Overview },
     { id: 'projects', label: 'Projects', icon: Layers, component: ProjectManager },
     { id: 'experience', label: 'Experience', icon: Briefcase, component: ExperienceManager },
     { id: 'education', label: 'Education', icon: GraduationCap, component: EducationManager },
