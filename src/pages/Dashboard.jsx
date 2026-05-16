@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { LayoutDashboard, Briefcase, GraduationCap, Layers, MessageSquare, UserPlus, LogOut, Settings, ChevronRight, Bell, X, ShieldCheck, Code } from 'lucide-react';
+import { LayoutDashboard, Briefcase, GraduationCap, Layers, MessageSquare, UserPlus, LogOut, Settings, ChevronRight, Bell, X, ShieldCheck, Code, Mail, UserCheck, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProjectManager from '../components/admin/ProjectManager';
 import ExperienceManager from '../components/admin/ExperienceManager';
@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [adminName, setAdminName] = useState('Admin');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isNotifyOpen, setIsNotifyOpen] = useState(false);
   const [notifications, setNotifications] = useState({ total: 0, messages: 0, proposals: 0, security: 0 });
 
   useEffect(() => {
@@ -138,25 +139,90 @@ const Dashboard = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="relative group">
-              <button className="w-9 h-9 rounded bg-slate-50 flex items-center justify-center text-slate-400 hover:text-sky-600 transition-all">
-                <Bell size={18} />
+            <div className="relative">
+              <button 
+                onClick={() => setIsNotifyOpen(!isNotifyOpen)}
+                className={`w-10 h-10 rounded flex items-center justify-center transition-all ${isNotifyOpen ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-400 hover:text-sky-600'}`}
+              >
+                <Bell size={20} />
                 {notifications.total > 0 && (
                   <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white animate-pulse" />
                 )}
               </button>
               
-              {/* Notification Tooltip/Dropdown Placeholder */}
-              {notifications.total > 0 && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded border border-slate-100 shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all z-50 p-4">
-                  <h4 className="text-xs font-black text-slate-900 mb-3 border-b border-slate-50 pb-2">New Alerts</h4>
-                  <div className="space-y-2">
-                    {notifications.messages > 0 && <p className="text-[11px] font-bold text-slate-600 flex justify-between">New Messages <span className="text-sky-600">{notifications.messages}</span></p>}
-                    {notifications.proposals > 0 && <p className="text-[11px] font-bold text-slate-600 flex justify-between">New Proposals <span className="text-sky-600">{notifications.proposals}</span></p>}
-                    {notifications.security > 0 && <p className="text-[11px] font-bold text-red-500 flex justify-between">Security Alerts <span className="text-red-500">{notifications.security}</span></p>}
-                  </div>
-                </div>
-              )}
+              <AnimatePresence>
+                {isNotifyOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsNotifyOpen(false)} />
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute right-0 top-full mt-3 w-80 bg-white rounded-2xl border border-slate-100 shadow-2xl z-50 overflow-hidden"
+                    >
+                      <div className="p-5 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
+                        <h4 className="text-[12px] font-black text-slate-900 uppercase tracking-widest">Notification Center</h4>
+                        <span className="text-[10px] font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-full">{notifications.total} New</span>
+                      </div>
+
+                      <div className="max-h-[350px] overflow-y-auto">
+                        {notifications.total === 0 ? (
+                          <div className="p-10 text-center">
+                            <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                               <ShieldCheck size={24} className="text-slate-300" />
+                            </div>
+                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">System is clear</p>
+                          </div>
+                        ) : (
+                          <div className="divide-y divide-slate-50">
+                            {notifications.messages > 0 && (
+                              <button onClick={() => { setActiveTab('messages'); setIsNotifyOpen(false); }} className="w-full p-4 flex items-start gap-4 hover:bg-slate-50 transition-all text-left group">
+                                <div className="w-9 h-9 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                  <Mail size={18} />
+                                </div>
+                                <div>
+                                  <p className="text-[12px] font-black text-slate-900">New Contact Messages</p>
+                                  <p className="text-[11px] text-slate-500 font-medium mt-0.5">You have {notifications.messages} unread inquiries.</p>
+                                </div>
+                              </button>
+                            )}
+                            {notifications.proposals > 0 && (
+                              <button onClick={() => { setActiveTab('proposals'); setIsNotifyOpen(false); }} className="w-full p-4 flex items-start gap-4 hover:bg-slate-50 transition-all text-left group">
+                                <div className="w-9 h-9 bg-sky-50 text-sky-600 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                  <UserCheck size={18} />
+                                </div>
+                                <div>
+                                  <p className="text-[12px] font-black text-slate-900">New Job Proposals</p>
+                                  <p className="text-[11px] text-slate-500 font-medium mt-0.5">{notifications.proposals} potential clients reached out.</p>
+                                </div>
+                              </button>
+                            )}
+                            {notifications.security > 0 && (
+                              <div className="w-full p-4 flex items-start gap-4 bg-red-50/30 hover:bg-red-50 transition-all text-left group">
+                                <div className="w-9 h-9 bg-red-50 text-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                  <AlertCircle size={18} />
+                                </div>
+                                <div>
+                                  <p className="text-[12px] font-black text-red-600">Security Alerts</p>
+                                  <p className="text-[11px] text-red-500/80 font-medium mt-0.5">{notifications.security} failed login attempts detected.</p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {notifications.total > 0 && (
+                         <div className="p-3 bg-slate-50 border-t border-slate-100">
+                            <button className="w-full py-2.5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hover:text-sky-600 transition-all">
+                               Mark all as seen
+                            </button>
+                         </div>
+                      )}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
             </div>
 
             <div className="flex items-center gap-3 pl-4 border-l border-slate-100">
@@ -164,7 +230,7 @@ const Dashboard = () => {
                   <p className="text-[12px] font-black text-slate-900 leading-none">{adminName}</p>
                   <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest mt-1">Super Admin</p>
                </div>
-               <div className="w-9 h-9 rounded bg-sky-100 flex items-center justify-center text-sky-600 font-black text-sm">
+               <div className="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600 font-black text-sm shadow-sm border border-sky-200">
                  {adminName[0]}
                </div>
             </div>
