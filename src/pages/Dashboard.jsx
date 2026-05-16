@@ -121,7 +121,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <main className="flex-1 min-w-0 flex flex-col max-h-screen">
         {/* Header */}
-        <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40 px-6 flex items-center justify-between">
+        <header className="py-5 bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40 px-6 md:px-8 flex items-center justify-between min-h-[80px]">
           <div className="flex items-center gap-4">
             <button onClick={() => setIsSidebarOpen(true)} className="lg:hidden p-2 text-slate-400 hover:text-slate-900 bg-slate-50 rounded">
                <LayoutDashboard size={18} />
