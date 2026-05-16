@@ -12,11 +12,11 @@ const Projects = () => {
         <div className="mb-16">
           <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px] mb-4 block">Portfolio</span>
           <h2 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter mb-6 leading-tight">
-            Featured <br />
-            <span className="text-sky-600">Creations.</span>
+            My <br />
+            <span className="text-sky-600">Projects.</span>
           </h2>
           <p className="text-base text-slate-500 font-medium max-w-xl leading-relaxed">
-            A selection of my professional work, ranging from AI ecosystems to financial management platforms.
+            Here are some of the projects I have worked on recently.
           </p>
         </div>
 

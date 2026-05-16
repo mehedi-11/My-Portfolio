@@ -17,10 +17,10 @@ const About = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px] mb-4 block">The Narrative</span>
+            <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px] mb-4 block">My Story</span>
             <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter mb-8 leading-[1.1]">
-              A Story of <br />
-              <span className="text-sky-600 italic">Persistence.</span>
+              Passionate About <br />
+              <span className="text-sky-600 italic">Coding.</span>
             </h2>
             
             <div className="space-y-5 mb-10">
@@ -54,7 +54,7 @@ const About = () => {
           >
             <div>
               <h3 className="text-xl font-black text-slate-900 mb-6 tracking-tight flex items-center gap-3">
-                <GraduationCap className="text-sky-600" size={24} /> Academic Foundation
+                <GraduationCap className="text-sky-600" size={24} /> Education
               </h3>
               <div className="space-y-6">
                 {education.map((item, index) => (

@@ -9,9 +9,9 @@ const Experience = () => {
     <section id="experience" className="section-padding bg-slate-50 relative">
       <div className="container-custom">
         <div className="max-w-3xl mb-16">
-          <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px] mb-3 block">Career Path</span>
+          <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px] mb-3 block">Experience</span>
           <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter mb-6">
-            Professional <span className="text-sky-600">Timeline.</span>
+            Work <span className="text-sky-600">History.</span>
           </h2>
         </div>
 

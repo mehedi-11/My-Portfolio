@@ -21,16 +21,16 @@ const Hero = () => {
           >
             <div className="flex items-center gap-2 mb-4">
               <span className="w-10 h-[1px] bg-sky-600"></span>
-              <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px]">Welcome to my world</span>
+              <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px]">Hello, I am</span>
             </div>
             
             <h1 className="text-5xl md:text-7xl font-black text-slate-900 leading-[0.95] mb-6 tracking-tighter">
               I'm <span className="text-sky-600">Mehedi</span>,<br />
-              Digital Architect.
+              Web Developer.
             </h1>
             
             <p className="text-lg text-slate-500 mb-8 max-w-lg leading-relaxed font-medium">
-              Transforming complex ideas into <span className="text-slate-900 font-bold">clean, smooth, and high-performance</span> digital experiences. Specialized in modern Front-end development.
+              I build clean, modern, and user-friendly websites that provide a <span className="text-slate-900 font-bold">smooth and fast</span> user experience.
             </p>
 
             <div className="flex flex-wrap gap-4 mb-10">

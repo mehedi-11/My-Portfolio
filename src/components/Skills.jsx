@@ -34,13 +34,13 @@ const Skills = () => {
         <div className="grid lg:grid-cols-12 gap-12 items-start">
           {/* Header Content */}
           <div className="lg:col-span-4 lg:sticky lg:top-24">
-            <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px] mb-3 block">My Expertise</span>
+            <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px] mb-3 block">What I Do</span>
             <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter mb-6">
               Technical <br />
-              <span className="text-sky-600">Dominance.</span>
+              <span className="text-sky-600">Skills.</span>
             </h2>
             <p className="text-base text-slate-500 leading-relaxed mb-8">
-              I don't just write code; I engineer solutions. My stack is curated for maximum performance, security, and scalability.
+              I specialize in building high-quality web applications using modern technologies.
             </p>
             
             <div className="flex flex-col gap-4">
