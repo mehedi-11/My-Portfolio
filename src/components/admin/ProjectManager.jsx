@@ -73,44 +73,43 @@ const ProjectManager = () => {
   if (loading && projects.length === 0) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-sky-600" size={40} /></div>;
 
   return (
-    <div className="space-y-12">
-      {/* Form Section */}
-      <section className="bg-white p-8 md:p-12 rounded-[2.5rem] border border-slate-100 shadow-sm">
-        <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3">
-          {editingId ? <><Pencil size={24} className="text-sky-600" /> Edit Project</> : <><Plus size={24} className="text-sky-600" /> Add New Project</>}
+    <div className="space-y-6">
+      <section className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm">
+        <h3 className="text-lg font-black text-slate-900 mb-6 flex items-center gap-2">
+          {editingId ? <><Pencil size={20} className="text-sky-600" /> Edit Project</> : <><Plus size={20} className="text-sky-600" /> Add Project</>}
         </h3>
 
         {message.text && (
-          <div className={`mb-8 p-4 rounded-2xl text-xs font-bold border ${
+          <div className={`mb-6 p-3 rounded-xl text-[11px] font-bold border ${
             message.type === 'success' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
           }`}>
             {message.text}
           </div>
         )}
         
-        <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
-          <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Project Title</label>
+        <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Title</label>
             <input 
               required
               value={formData.title}
               onChange={(e) => setFormData({...formData, title: e.target.value})}
-              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:border-sky-500 outline-none transition-all text-sm font-medium"
-              placeholder="e.g. AI Content Ecosystem"
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:bg-white focus:border-sky-500 transition-all text-[13px] font-medium"
+              placeholder="Project Title"
             />
           </div>
-          <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Slug (URL)</label>
+          <div className="space-y-1">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Slug</label>
             <input 
               required
               value={formData.slug}
               onChange={(e) => setFormData({...formData, slug: e.target.value})}
-              className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:border-sky-500 outline-none transition-all text-sm font-medium"
-              placeholder="e.g. ai-content-ecosystem"
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:bg-white focus:border-sky-500 transition-all text-[13px] font-medium"
+              placeholder="project-url-slug"
             />
           </div>
-          <div className="md:col-span-2 space-y-1.5">
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Short Description</label>
+          <div className="md:col-span-2 space-y-1">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Short Description</label>
             <textarea 
               required
               value={formData.description}
