@@ -30,7 +30,7 @@ const Dashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
-    window.location.href = '/admin/login';
+    window.location.href = '/admin';
   };
 
   const tabs = [
