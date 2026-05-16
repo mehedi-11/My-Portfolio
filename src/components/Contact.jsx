@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageSquare, CheckCircle, AlertCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageSquare, CheckCircle, AlertCircle, Facebook, Instagram, Globe } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { messageAPI } from '../api';
 import SuccessModal from './SuccessModal';
@@ -108,15 +108,30 @@ const Contact = () => {
                )}
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               {personalInfo.github && (
-                <a href={personalInfo.github} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all">
+                <a href={personalInfo.github} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all shadow-sm">
                   <Github size={18} />
                 </a>
               )}
               {personalInfo.linkedin && (
-                <a href={personalInfo.linkedin} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all">
+                <a href={personalInfo.linkedin} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all shadow-sm">
                   <Linkedin size={18} />
+                </a>
+              )}
+              {personalInfo.facebook && (
+                <a href={personalInfo.facebook} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all shadow-sm">
+                  <Facebook size={18} />
+                </a>
+              )}
+              {personalInfo.instagram && (
+                <a href={personalInfo.instagram} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all shadow-sm">
+                  <Instagram size={18} />
+                </a>
+              )}
+              {personalInfo.website && (
+                <a href={personalInfo.website} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all shadow-sm">
+                  <Globe size={18} />
                 </a>
               )}
             </div>
