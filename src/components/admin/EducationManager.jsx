@@ -25,20 +25,25 @@ const EducationManager = () => {
     }
   };
 
+  const [message, setMessage] = useState({ type: '', text: '' });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setMessage({ type: '', text: '' });
     try {
       if (editingId) {
         await portfolioAPI.updateEducation(editingId, formData);
+        setMessage({ type: 'success', text: 'Education updated!' });
       } else {
         await portfolioAPI.addEducation(formData);
+        setMessage({ type: 'success', text: 'Education added!' });
       }
       setEditingId(null);
       setFormData({ degree: '', field: '', institution: '', period: '', icon: 'GraduationCap' });
       fetchItems();
     } catch (err) {
-      alert('Failed to save');
+      setMessage({ type: 'error', text: 'Failed to save education.' });
     } finally {
       setLoading(false);
     }
@@ -47,6 +52,7 @@ const EducationManager = () => {
   const handleEdit = (item) => {
     setEditingId(item._id);
     setFormData(item);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id) => {
@@ -64,6 +70,14 @@ const EducationManager = () => {
         <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3">
           {editingId ? 'Edit Education' : 'Add New Education'}
         </h3>
+
+        {message.text && (
+          <div className={`mb-8 p-4 rounded-2xl text-xs font-bold border ${
+            message.type === 'success' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
+          }`}>
+            {message.text}
+          </div>
+        )}
         
         <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
           <div className="space-y-1.5">
