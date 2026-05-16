@@ -1,13 +1,16 @@
 import { motion } from 'framer-motion';
-import { Calendar, MapPin, ChevronRight, Briefcase } from 'lucide-react';
+import { Calendar, MapPin, Briefcase, Building2 } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 
 const Experience = () => {
   const { experience, loading } = usePortfolio();
 
   return (
-    <section id="experience" className="section-padding bg-slate-50 relative">
-      <div className="container-custom">
+    <section id="experience" className="section-padding bg-slate-50 relative overflow-hidden">
+      {/* Decorative background circle */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-sky-100/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
+      
+      <div className="container-custom relative z-10">
         <div className="max-w-3xl mb-16">
           <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px] mb-3 block">Experience</span>
           <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter mb-6">
@@ -20,7 +23,7 @@ const Experience = () => {
             <div className="w-10 h-10 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-6">
             {experience.map((item, index) => (
               <motion.div
                 key={index}
@@ -28,39 +31,38 @@ const Experience = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-sky-100/50 transition-all duration-300 flex flex-col md:flex-row md:items-center gap-6"
+                className="group bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-sky-100/50 transition-all duration-500 relative overflow-hidden"
               >
-                {/* Icon area */}
-                <div className="w-16 h-16 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-sky-600 group-hover:text-white transition-all flex-shrink-0">
-                  <Briefcase size={28} />
-                </div>
+                {/* Background Accent */}
+                <div className="absolute top-0 right-0 w-20 h-20 bg-slate-50 rounded-bl-[40px] -z-0 transition-all group-hover:w-full group-hover:h-full group-hover:rounded-none group-hover:bg-sky-50/30" />
 
-                {/* Content */}
-                <div className="flex-grow flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <div>
-                    <div className="flex items-center gap-3 mb-1">
-                      <h3 className="text-xl font-black text-slate-900 group-hover:text-sky-600 transition-colors">{item.designation}</h3>
-                      <span className="px-3 py-1 bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-widest rounded-full">
-                        {item.type}
-                      </span>
+                <div className="relative z-10">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="w-14 h-14 bg-sky-600 text-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <Briefcase size={24} />
                     </div>
-                    <p className="text-slate-500 font-bold text-sm">{item.company}</p>
+                    <span className="px-3 py-1 bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-widest rounded-full">
+                      {item.type}
+                    </span>
                   </div>
 
-                  <div className="flex flex-col md:items-end gap-1">
-                    <div className="flex items-center gap-2 text-slate-900 font-black text-xs">
+                  <h3 className="text-xl font-black text-slate-900 mb-1 group-hover:text-sky-600 transition-colors tracking-tight">
+                    {item.designation}
+                  </h3>
+                  
+                  <div className="flex items-center gap-2 text-slate-500 font-bold text-xs mb-6">
+                    <Building2 size={14} className="text-sky-600" />
+                    {item.company}
+                  </div>
+
+                  <div className="space-y-3 pt-6 border-t border-slate-50">
+                    <div className="flex items-center gap-3 text-slate-900 font-black text-[10px] uppercase tracking-wider">
                       <Calendar size={14} className="text-sky-600" />
                       {item.duration}
                     </div>
-                    <div className="flex items-center gap-2 text-slate-400 font-medium text-[11px]">
-                      <MapPin size={12} /> {item.location}
+                    <div className="flex items-center gap-3 text-slate-400 font-medium text-[11px]">
+                      <MapPin size={14} /> {item.location}
                     </div>
-                  </div>
-                </div>
-
-                <div className="hidden md:block">
-                  <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-sky-50 group-hover:text-sky-600 transition-all">
-                    <ChevronRight size={20} />
                   </div>
                 </div>
               </motion.div>
