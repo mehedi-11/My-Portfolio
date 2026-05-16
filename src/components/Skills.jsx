@@ -8,7 +8,7 @@ const Skills = () => {
     { 
       title: "Frontend Architecture", 
       icon: Globe, 
-      items: skills.frontend,
+      items: skills?.frontend || [],
       description: "Crafting beautiful, accessible, and high-performance user interfaces.",
       color: "from-sky-500 to-sky-600",
       bg: "bg-sky-50"
@@ -16,7 +16,7 @@ const Skills = () => {
     { 
       title: "Backend Engineering", 
       icon: Terminal, 
-      items: skills.backend,
+      items: skills?.backend || [],
       description: "Building scalable server-side logic and robust API infrastructures.",
       color: "from-indigo-500 to-indigo-600",
       bg: "bg-indigo-50"
@@ -24,7 +24,7 @@ const Skills = () => {
     { 
       title: "Data Management", 
       icon: Database, 
-      items: skills.database,
+      items: skills?.database || [],
       description: "Designing efficient database schemas and optimizing complex queries.",
       color: "from-amber-500 to-amber-600",
       bg: "bg-amber-50"
@@ -32,7 +32,7 @@ const Skills = () => {
     { 
       title: "DevOps & Tools", 
       icon: Wrench, 
-      items: skills.tools,
+      items: skills?.tools || [],
       description: "Streamlining development workflows with modern CI/CD tools.",
       color: "from-emerald-500 to-emerald-600",
       bg: "bg-emerald-50"

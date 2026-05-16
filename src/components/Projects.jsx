@@ -39,7 +39,7 @@ const Projects = () => {
                   {/* Info Part */}
                   <div className="flex-grow max-w-2xl">
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {project.technologies.slice(0, 3).map((tech, i) => (
+                      {(project.technologies || []).slice(0, 3).map((tech, i) => (
                         <span key={i} className="text-[9px] font-black uppercase tracking-widest text-slate-400 border border-slate-100 px-3 py-1 rounded-full">
                           {tech}
                         </span>

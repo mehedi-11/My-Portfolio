@@ -9,7 +9,12 @@ export const PortfolioProvider = ({ children }) => {
     experience: [],
     education: [],
     personalInfo: {},
-    skills: {}
+    skills: {
+      frontend: [],
+      backend: [],
+      database: [],
+      tools: []
+    }
   });
   const [loading, setLoading] = useState(true);
 
@@ -24,18 +29,27 @@ export const PortfolioProvider = ({ children }) => {
           portfolioAPI.getSettings()
         ]);
 
-        // Format skills into categorized object like the original static data
-        const formattedSkills = skillsRes.data.reduce((acc, curr) => {
-          acc[curr.category.toLowerCase()] = curr.items;
-          return acc;
-        }, {});
+        const formattedSkills = {
+          frontend: [],
+          backend: [],
+          database: [],
+          tools: []
+        };
+        
+        if (skillsRes.data && Array.isArray(skillsRes.data)) {
+          skillsRes.data.forEach(curr => {
+            if (curr.category) {
+              formattedSkills[curr.category.toLowerCase()] = curr.items || [];
+            }
+          });
+        }
 
         setData({
-          projects: projectsRes.data,
-          experience: expRes.data,
-          education: eduRes.data,
+          projects: projectsRes.data || [],
+          experience: expRes.data || [],
+          education: eduRes.data || [],
           skills: formattedSkills,
-          personalInfo: settingsRes.data
+          personalInfo: settingsRes.data || {}
         });
       } catch (err) {
         console.error("Failed to fetch from backend", err);
