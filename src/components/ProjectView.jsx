@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { projects, personalInfo } from '../data/portfolio';
+import { usePortfolio } from '../context/PortfolioContext';
 import { 
   ArrowLeft, 
   ExternalLink, 
@@ -19,6 +19,7 @@ import { motion } from 'framer-motion';
 const ProjectView = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { projects, personalInfo, loading } = usePortfolio();
   
   // Find project by slug instead of index
   const project = projects.find(p => p.slug === slug);
@@ -44,6 +45,8 @@ const ProjectView = () => {
     
     window.scrollTo(0, 0);
   }, [project]);
+
+  if (loading && projects.length === 0) return null;
 
   if (!project) {
     return (

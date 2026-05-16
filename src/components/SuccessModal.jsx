@@ -1,6 +1,5 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, X } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 const SuccessModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;

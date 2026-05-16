@@ -1,9 +1,11 @@
-import React from 'react';
-import { personalInfo, education } from '../data/portfolio';
 import { motion } from 'framer-motion';
 import { GraduationCap, MapPin, Coffee } from 'lucide-react';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const About = () => {
+  const { education, personalInfo, loading } = usePortfolio();
+
+  if (loading && education.length === 0) return null;
   return (
     <section id="about" className="section-padding bg-white relative overflow-hidden">
       <div className="container-custom">

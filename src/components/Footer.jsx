@@ -1,7 +1,7 @@
-import React from 'react';
-import { personalInfo } from '../data/portfolio';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const Footer = () => {
+  const { personalInfo } = usePortfolio();
   return (
     <footer className="py-20 bg-slate-900 text-white overflow-hidden relative">
       <div className="absolute top-0 right-0 p-10 text-[10vw] font-black text-white/5 select-none -z-0 leading-none pointer-events-none uppercase">

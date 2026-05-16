@@ -1,9 +1,15 @@
-import React from 'react';
-import { experience } from '../data/portfolio';
 import { motion } from 'framer-motion';
-import { Briefcase, Calendar, MapPin, ChevronRight } from 'lucide-react';
+import { Calendar, MapPin, ChevronRight, Briefcase, Layout, Cpu, Globe, Smartphone, BookOpen, Code2 } from 'lucide-react';
+import { usePortfolio } from '../context/PortfolioContext';
+
+const iconMap = {
+  Briefcase, Layout, Cpu, Globe, Smartphone, BookOpen, Code2
+};
 
 const Experience = () => {
+  const { experience, loading } = usePortfolio();
+
+  if (loading && experience.length === 0) return null;
   return (
     <section id="experience" className="section-padding bg-slate-50 relative">
       <div className="container-custom">
@@ -26,7 +32,10 @@ const Experience = () => {
             >
               {/* Icon/Logo area */}
               <div className="w-16 h-16 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-sky-600 group-hover:text-white transition-all flex-shrink-0">
-                <item.icon size={28} />
+                {(() => {
+                  const Icon = iconMap[item.icon] || Briefcase;
+                  return <Icon size={28} />;
+                })()}
               </div>
 
               {/* Main Content */}

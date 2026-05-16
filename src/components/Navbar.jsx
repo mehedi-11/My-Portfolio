@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X, Github, Linkedin, Mail, ArrowUpRight, Briefcase } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../utils/cn';
 import HireModal from './HireModal';
-import { personalInfo } from '../data/portfolio';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const Navbar = () => {
+  const { personalInfo } = usePortfolio();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);

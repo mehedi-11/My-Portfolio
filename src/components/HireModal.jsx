@@ -1,7 +1,7 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, CheckCircle, AlertCircle } from 'lucide-react';
-import emailjs from '@emailjs/browser';
+import { messageAPI } from '../api';
 import SuccessModal from './SuccessModal';
 
 const HireModal = ({ isOpen, onClose }) => {
@@ -9,50 +9,42 @@ const HireModal = ({ isOpen, onClose }) => {
   const [status, setStatus] = useState('idle'); // idle, sending, success, error
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Reset status when modal opens
-  useEffect(() => {
-    if (isOpen) {
-      setStatus('idle');
-    }
-  }, [isOpen]);
+  const handleClose = () => {
+    setStatus('idle');
+    onClose();
+  };
 
   if (!isOpen && !showSuccess) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Safety check for keys
-    if (!import.meta.env.VITE_EMAILJS_PUBLIC_KEY) {
-      console.error("EmailJS Keys are missing in your environment variables!");
-      setStatus('error');
-      return;
-    }
-
     setStatus('sending');
 
-    emailjs.sendForm(
-      import.meta.env.VITE_EMAILJS_SERVICE_ID,
-      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-      formRef.current,
-      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-    )
-    .then((result) => {
-        console.log("Hire Email Sent Successfully!", result.text);
-        setStatus('success');
-        setTimeout(() => {
-            setShowSuccess(true);
-            onClose(); // Close the hire modal to show success modal
-        }, 1000);
-    }, (error) => {
-        console.error("EmailJS Hire Error Detailed:", error);
-        setStatus('error');
-        setTimeout(() => setStatus('idle'), 5000);
-    });
+    try {
+      const formData = new FormData(formRef.current);
+      const data = Object.fromEntries(formData.entries());
+      
+      await messageAPI.sendProposal({
+        company: data.company,
+        salary: data.salary,
+        responsibilities: data.responsibilities
+      });
+
+      setStatus('success');
+      setTimeout(() => {
+          setShowSuccess(true);
+          onClose(); // Close the hire modal to show success modal
+      }, 1000);
+    } catch (error) {
+      console.error("Submission Error:", error);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 5000);
+    }
   };
 
   const handleSuccessClose = () => {
     setShowSuccess(false);
-    window.location.reload();
+    setStatus('idle');
   };
 
   return (
@@ -67,7 +59,7 @@ const HireModal = ({ isOpen, onClose }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={onClose}
+              onClick={handleClose}
               className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
             />
             
@@ -85,7 +77,7 @@ const HireModal = ({ isOpen, onClose }) => {
                     <h2 className="text-3xl font-black text-slate-900 tracking-tighter">Hire Me.</h2>
                   </div>
                   <button 
-                    onClick={onClose}
+                    onClick={handleClose}
                     className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all"
                   >
                     <X size={24} />

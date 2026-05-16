@@ -1,8 +1,7 @@
-import React, { useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useRef, useState } from 'react';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageSquare, CheckCircle, AlertCircle } from 'lucide-react';
 import { personalInfo } from '../data/portfolio';
-import emailjs from '@emailjs/browser';
+import { messageAPI } from '../api';
 import SuccessModal from './SuccessModal';
 
 const Contact = () => {
@@ -10,39 +9,34 @@ const Contact = () => {
   const [status, setStatus] = useState('idle'); // idle, sending, success, error
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Safety check for keys
-    if (!import.meta.env.VITE_EMAILJS_PUBLIC_KEY) {
-      console.error("EmailJS Keys are missing in your environment variables!");
-      setStatus('error');
-      return;
-    }
-
     setStatus('sending');
 
-    emailjs.sendForm(
-      import.meta.env.VITE_EMAILJS_SERVICE_ID,
-      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-      formRef.current,
-      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-    )
-    .then((result) => {
-        console.log("Email Sent Successfully!", result.text);
-        setStatus('success');
-        formRef.current.reset();
-        setShowSuccess(true);
-    }, (error) => {
-        console.error("EmailJS Error Detailed:", error);
-        setStatus('error');
-        setTimeout(() => setStatus('idle'), 5000);
-    });
+    try {
+      const formData = new FormData(formRef.current);
+      const data = Object.fromEntries(formData.entries());
+      
+      await messageAPI.sendContact({
+        name: data.user_name,
+        email: data.user_email,
+        subject: data.subject,
+        message: data.message
+      });
+
+      setStatus('success');
+      formRef.current.reset();
+      setShowSuccess(true);
+    } catch (error) {
+      console.error("Submission Error:", error);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 5000);
+    }
   };
 
   const handleModalClose = () => {
     setShowSuccess(false);
-    window.location.reload();
+    setStatus('idle');
   };
 
   return (

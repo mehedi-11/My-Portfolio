@@ -1,9 +1,9 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Mail, ArrowRight, Download, Sparkles } from 'lucide-react';
-import { personalInfo } from '../data/portfolio';
+import { ArrowRight, Download, Sparkles } from 'lucide-react';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const Hero = () => {
+  const { personalInfo } = usePortfolio();
   return (
     <section className="relative min-h-[90vh] flex items-center pt-20 overflow-hidden bg-[#fcfcfd]">
       {/* Dynamic Background Elements */}

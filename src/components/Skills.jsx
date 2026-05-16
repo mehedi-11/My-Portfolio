@@ -1,9 +1,9 @@
-import React from 'react';
-import { skills } from '../data/portfolio';
 import { motion } from 'framer-motion';
 import { Terminal, Wrench, Globe, Smartphone, Cpu, ShieldCheck, Database } from 'lucide-react';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const Skills = () => {
+  const { skills } = usePortfolio();
   const skillCategories = [
     { 
       title: "Frontend Architecture", 

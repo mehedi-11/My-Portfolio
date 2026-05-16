@@ -1,10 +1,12 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Github, BookOpen } from 'lucide-react';
-import { projects } from '../data/portfolio';
 import { Link } from 'react-router-dom';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const Projects = () => {
+  const { projects, loading } = usePortfolio();
+
+  if (loading && projects.length === 0) return null;
   return (
     <section id="projects" className="section-padding bg-[#fcfcfd]">
       <div className="container-custom">
