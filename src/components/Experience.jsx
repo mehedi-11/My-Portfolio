@@ -42,7 +42,7 @@ const Experience = () => {
               <div className="flex-grow flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                   <div className="flex items-center gap-3 mb-1">
-                    <h3 className="text-xl font-black text-slate-900 group-hover:text-sky-600 transition-colors">{item.role}</h3>
+                    <h3 className="text-xl font-black text-slate-900 group-hover:text-sky-600 transition-colors">{item.designation}</h3>
                     <span className="px-3 py-1 bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-widest rounded-full">
                       {item.type}
                     </span>
@@ -53,10 +53,10 @@ const Experience = () => {
                 <div className="flex flex-col md:items-end gap-1">
                   <div className="flex items-center gap-2 text-slate-900 font-black text-xs">
                     <Calendar size={14} className="text-sky-600" />
-                    {item.period}
+                    {item.duration}
                   </div>
                   <div className="flex items-center gap-2 text-slate-400 font-medium text-[11px]">
-                    <MapPin size={12} /> {item.type === 'Remote' ? 'Remote / Worldwide' : 'On-site / Bangladesh'}
+                    <MapPin size={12} /> {item.location}
                   </div>
                 </div>
               </div>

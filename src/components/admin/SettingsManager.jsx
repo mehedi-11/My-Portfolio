@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Save, User, Lock, Loader2, CheckCircle, Mail, Phone, MapPin, Facebook, Linkedin, Github, Twitter, Instagram, Globe } from 'lucide-react';
+import { Save, User, Lock, Loader2, CheckCircle, Mail, Phone, MapPin, Facebook, Linkedin, Github, Instagram, Globe, FileText } from 'lucide-react';
 import { authAPI, settingsAPI } from '../../api';
 
 const SettingsManager = () => {
   const [profileData, setProfileData] = useState({ username: localStorage.getItem('adminUser') || '', password: '', confirmPassword: '' });
   const [settingsData, setSettingsData] = useState({
-    email: '', phone: '', whatsapp: '', address: '',
-    socials: { facebook: '', linkedin: '', github: '', twitter: '', instagram: '' }
+    email: '', phone: '', whatsapp: '', address: '', statement: '',
+    github: '', linkedin: '', facebook: '', instagram: '', website: '', cvPath: ''
   });
   
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const SettingsManager = () => {
       setSuccess({ ...success, settings: true });
       setTimeout(() => setSuccess({ ...success, settings: false }), 3000);
     } catch (err) {
-      setError('Failed to update contact info');
+      setError('Failed to update settings');
     } finally {
       setLoading(false);
     }
@@ -72,6 +72,7 @@ const SettingsManager = () => {
         </h3>
 
         {success.profile && <div className="mb-6 p-3 bg-emerald-50 text-emerald-600 rounded text-[11px] font-bold flex items-center gap-2 border border-emerald-100"><CheckCircle size={16} /> Login details updated!</div>}
+        {error && <div className="mb-6 p-3 bg-red-50 text-red-600 rounded text-[11px] font-bold border border-red-100">{error}</div>}
         
         <form onSubmit={handleProfileSubmit} className="space-y-4 flex-1">
           <div className="space-y-1">
@@ -114,14 +115,14 @@ const SettingsManager = () => {
         </form>
       </section>
 
-      {/* Contact & Social Settings */}
+      {/* Portfolio Info Settings */}
       <section className="bg-white p-6 md:p-8 rounded border border-slate-100 shadow-sm">
         <h3 className="text-base font-black text-slate-900 mb-6 flex items-center gap-3">
           <div className="w-8 h-8 bg-sky-600 text-white rounded flex items-center justify-center"><Globe size={16} /></div>
           Portfolio Information
         </h3>
 
-        {success.settings && <div className="mb-6 p-3 bg-emerald-50 text-emerald-600 rounded text-[11px] font-bold flex items-center gap-2 border border-emerald-100"><CheckCircle size={16} /> Contact info saved!</div>}
+        {success.settings && <div className="mb-6 p-3 bg-emerald-50 text-emerald-600 rounded text-[11px] font-bold flex items-center gap-2 border border-emerald-100"><CheckCircle size={16} /> Portfolio info saved!</div>}
 
         <form onSubmit={handleSettingsSubmit} className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
@@ -150,7 +151,7 @@ const SettingsManager = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Office / Home Address</label>
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Location Address</label>
             <div className="relative">
               <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
               <input 
@@ -161,24 +162,46 @@ const SettingsManager = () => {
             </div>
           </div>
 
+          <div className="space-y-1">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">About Narrative (Statement)</label>
+            <div className="relative">
+              <FileText className="absolute left-4 top-4 text-slate-400" size={16} />
+              <textarea 
+                rows={5}
+                value={settingsData.statement}
+                onChange={(e) => setSettingsData({...settingsData, statement: e.target.value})}
+                className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none text-[13px] font-medium focus:bg-white focus:border-sky-500 resize-none"
+                placeholder="Write your professional statement here..."
+              />
+            </div>
+          </div>
+
           <div className="pt-4 border-t border-slate-50">
-            <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] mb-4">Social Media Links</p>
+            <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] mb-4">Social Media & Links</p>
             <div className="grid sm:grid-cols-2 gap-3">
               <div className="relative">
-                <Facebook className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-                <input placeholder="Facebook URL" value={settingsData.socials.facebook} onChange={(e) => setSettingsData({...settingsData, socials: {...settingsData.socials, facebook: e.target.value}})} className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-100 rounded text-[12px] outline-none focus:border-sky-500" />
+                <Github className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                <input placeholder="GitHub URL" value={settingsData.github} onChange={(e) => setSettingsData({...settingsData, github: e.target.value})} className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-100 rounded text-[12px] outline-none focus:border-sky-500" />
               </div>
               <div className="relative">
                 <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-                <input placeholder="LinkedIn URL" value={settingsData.socials.linkedin} onChange={(e) => setSettingsData({...settingsData, socials: {...settingsData.socials, linkedin: e.target.value}})} className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-100 rounded text-[12px] outline-none focus:border-sky-500" />
+                <input placeholder="LinkedIn URL" value={settingsData.linkedin} onChange={(e) => setSettingsData({...settingsData, linkedin: e.target.value})} className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-100 rounded text-[12px] outline-none focus:border-sky-500" />
               </div>
               <div className="relative">
-                <Github className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-                <input placeholder="GitHub URL" value={settingsData.socials.github} onChange={(e) => setSettingsData({...settingsData, socials: {...settingsData.socials, github: e.target.value}})} className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-100 rounded text-[12px] outline-none focus:border-sky-500" />
+                <Facebook className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                <input placeholder="Facebook URL" value={settingsData.facebook} onChange={(e) => setSettingsData({...settingsData, facebook: e.target.value})} className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-100 rounded text-[12px] outline-none focus:border-sky-500" />
               </div>
               <div className="relative">
                 <Instagram className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-                <input placeholder="Instagram URL" value={settingsData.socials.instagram} onChange={(e) => setSettingsData({...settingsData, socials: {...settingsData.socials, instagram: e.target.value}})} className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-100 rounded text-[12px] outline-none focus:border-sky-500" />
+                <input placeholder="Instagram URL" value={settingsData.instagram} onChange={(e) => setSettingsData({...settingsData, instagram: e.target.value})} className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-100 rounded text-[12px] outline-none focus:border-sky-500" />
+              </div>
+              <div className="relative">
+                <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                <input placeholder="Website URL" value={settingsData.website} onChange={(e) => setSettingsData({...settingsData, website: e.target.value})} className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-100 rounded text-[12px] outline-none focus:border-sky-500" />
+              </div>
+              <div className="relative">
+                <FileText className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                <input placeholder="CV PDF Path" value={settingsData.cvPath} onChange={(e) => setSettingsData({...settingsData, cvPath: e.target.value})} className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-100 rounded text-[12px] outline-none focus:border-sky-500" />
               </div>
             </div>
           </div>

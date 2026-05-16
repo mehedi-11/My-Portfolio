@@ -25,10 +25,10 @@ const About = () => {
             
             <div className="space-y-5 mb-10">
               <p className="text-lg text-slate-600 leading-relaxed font-medium">
-                {personalInfo.statement.split('.')[0]}.
+                {personalInfo?.statement?.split('.')[0] || 'Loading statement...'}.
               </p>
               <p className="text-base text-slate-500 leading-relaxed">
-                {personalInfo.statement.split('.').slice(1).join('.')}
+                {personalInfo?.statement?.split('.').slice(1).join('.')}
               </p>
             </div>
 
@@ -60,10 +60,10 @@ const About = () => {
                 {education.map((item, index) => (
                   <div key={index} className="relative pl-6 group">
                     <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-slate-100 group-hover:bg-sky-600 transition-colors" />
-                    <span className="text-[9px] font-black text-sky-600 uppercase tracking-widest mb-1 block">{item.period}</span>
+                    <span className="text-[9px] font-black text-sky-600 uppercase tracking-widest mb-1 block">{item.duration}</span>
                     <h4 className="text-base font-black text-slate-800">{item.degree}</h4>
-                    <p className="text-slate-500 text-xs font-medium">{item.field}</p>
-                    <p className="text-slate-400 text-[10px] mt-1 uppercase tracking-tight">{item.institution}</p>
+                    <p className="text-slate-500 text-xs font-medium">{item.institution}</p>
+                    <p className="text-slate-400 text-[10px] mt-1 uppercase tracking-tight">{item.location} • {item.result}</p>
                   </div>
                 ))}
               </div>

@@ -1,30 +1,24 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { portfolioAPI } from '../../api';
-import { Plus, Pencil, Trash2, Save, Loader2, X, Briefcase } from 'lucide-react';
+import { Plus, Pencil as Edit2, Trash2, Save, X, Loader2, Calendar, MapPin, Briefcase } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ExperienceManager = () => {
-  const [experience, setExperience] = useState([]);
+  const [data, setData] = useState([]);
+  const initialForm = { designation: '', company: '', location: '', type: 'Onsite', duration: '', description: '', order: 0 };
+  const [formData, setFormData] = useState(initialForm);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [message, setMessage] = useState({ text: '', type: '' });
-  const [formData, setFormData] = useState({
-    role: '',
-    company: '',
-    period: '',
-    description: '',
-    order: 0
-  });
 
   useEffect(() => {
-    fetchExperience();
+    fetchData();
   }, []);
 
-  const fetchExperience = async () => {
+  const fetchData = async () => {
     try {
       const { data } = await portfolioAPI.getExperience();
-      setExperience(data);
+      setData(data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -34,34 +28,23 @@ const ExperienceManager = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
       if (editingId) {
         await portfolioAPI.updateExperience(editingId, formData);
-        setMessage({ text: 'Experience updated!', type: 'success' });
       } else {
         await portfolioAPI.addExperience(formData);
-        setMessage({ text: 'Experience added!', type: 'success' });
       }
-      fetchExperience();
+      fetchData();
       setShowModal(false);
-      resetForm();
+      setFormData(initialForm);
+      setEditingId(null);
     } catch (err) {
-      setMessage({ text: 'Failed to save.', type: 'error' });
-    } finally {
-      setLoading(false);
-      setTimeout(() => setMessage({ text: '', type: '' }), 3000);
+      console.error(err);
     }
   };
 
   const handleEdit = (item) => {
-    setFormData({
-      role: item.role,
-      company: item.company,
-      period: item.period,
-      description: item.description,
-      order: item.order || 0
-    });
+    setFormData(item);
     setEditingId(item._id);
     setShowModal(true);
   };
@@ -70,95 +53,71 @@ const ExperienceManager = () => {
     if (window.confirm('Delete this entry?')) {
       try {
         await portfolioAPI.deleteExperience(id);
-        fetchExperience();
-        setMessage({ text: 'Deleted.', type: 'success' });
+        fetchData();
       } catch (err) {
-        setMessage({ text: 'Delete failed.', type: 'error' });
+        console.error(err);
       }
-      setTimeout(() => setMessage({ text: '', type: '' }), 3000);
     }
   };
 
-  const resetForm = () => {
-    setFormData({ role: '', company: '', period: '', description: '', order: 0 });
-    setEditingId(null);
-  };
-
-  if (loading && experience.length === 0) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-sky-600" size={40} /></div>;
+  if (loading && data.length === 0) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-sky-600" size={40} /></div>;
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center bg-white p-5 rounded border border-slate-100 shadow-sm">
         <div>
-          <h3 className="text-lg font-black text-slate-900">Work Experience</h3>
-          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">{experience.length} Positions total</p>
+          <h3 className="text-lg font-black text-slate-900">Experience Management</h3>
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">Manage your professional journey</p>
         </div>
         <button 
-          onClick={() => { resetForm(); setShowModal(true); }}
-          className="bg-slate-900 text-white px-4 py-2.5 rounded font-black text-[11px] uppercase tracking-widest flex items-center gap-2 hover:bg-sky-600 transition-all shadow-lg"
+          onClick={() => { setEditingId(null); setFormData(initialForm); setShowModal(true); }}
+          className="flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded font-black text-[11px] uppercase tracking-widest hover:bg-sky-600 transition-all shadow-lg"
         >
-          <Plus size={16} /> Add Position
+          <Plus size={16} /> Add Experience
         </button>
       </div>
 
-      {message.text && (
-        <div className={`p-3 rounded text-[11px] font-bold border ${
-          message.type === 'success' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
-        }`}>
-          {message.text}
-        </div>
-      )}
-
-      {/* Data Table */}
       <div className="bg-white rounded border border-slate-100 overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-100">
-                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Role & Company</th>
-                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Period</th>
-                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-slate-50 border-b border-slate-100">
+              <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Designation & Company</th>
+              <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type & Location</th>
+              <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Duration</th>
+              <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-50">
+            {data.map((item) => (
+              <tr key={item._id} className="hover:bg-slate-50/50 transition-colors group">
+                <td className="px-6 py-4">
+                  <div className="font-bold text-slate-900 text-[13px]">{item.designation}</div>
+                  <div className="text-[11px] text-slate-500 font-medium">{item.company}</div>
+                </td>
+                <td className="px-6 py-4">
+                  <span className="inline-block px-2 py-0.5 rounded bg-sky-50 text-sky-600 text-[10px] font-black uppercase mb-1">{item.type}</span>
+                  <div className="text-[11px] text-slate-400 flex items-center gap-1 font-medium"><MapPin size={12} /> {item.location}</div>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2 text-slate-500 text-[11px] font-bold">
+                    <Calendar size={14} className="text-slate-300" /> {item.duration}
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-right">
+                  <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => handleEdit(item)} className="p-2 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded transition-all"><Edit2 size={16} /></button>
+                    <button onClick={() => handleDelete(item._id)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-all"><Trash2 size={16} /></button>
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {experience.map((item) => (
-                <tr key={item._id} className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-slate-50 rounded flex items-center justify-center text-slate-400"><Briefcase size={18} /></div>
-                      <div className="flex flex-col">
-                        <span className="text-[13px] font-bold text-slate-900">{item.role}</span>
-                        <span className="text-[11px] text-sky-600 font-bold">{item.company}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">{item.period}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => handleEdit(item)} className="p-2 text-sky-600 hover:bg-sky-50 rounded transition-all"><Pencil size={16} /></button>
-                      <button onClick={() => handleDelete(item._id)} className="p-2 text-red-500 hover:bg-red-50 rounded transition-all"><Trash2 size={16} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Modal Popup Form */}
       <AnimatePresence>
         {showModal && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowModal(false)}
-              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
-            />
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -171,64 +130,43 @@ const ExperienceManager = () => {
               </div>
 
               <form onSubmit={handleSubmit} className="p-6 overflow-y-auto custom-scrollbar flex-1 bg-white">
-                <div className="grid gap-4">
+                <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Role</label>
-                    <input 
-                      required
-                      value={formData.role}
-                      onChange={(e) => setFormData({...formData, role: e.target.value})}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none focus:bg-white focus:border-sky-500 transition-all text-[13px] font-medium"
-                      placeholder="e.g. Senior Web Developer"
-                    />
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Designation</label>
+                    <input required value={formData.designation} onChange={(e) => setFormData({...formData, designation: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none text-[13px] font-medium focus:bg-white focus:border-sky-500" placeholder="e.g. Senior Developer" />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Company</label>
-                    <input 
-                      required
-                      value={formData.company}
-                      onChange={(e) => setFormData({...formData, company: e.target.value})}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none focus:bg-white focus:border-sky-500 transition-all text-[13px] font-medium"
-                      placeholder="Company Name"
-                    />
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Company Name</label>
+                    <input required value={formData.company} onChange={(e) => setFormData({...formData, company: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none text-[13px] font-medium focus:bg-white focus:border-sky-500" placeholder="e.g. Google" />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Period</label>
-                    <input 
-                      required
-                      value={formData.period}
-                      onChange={(e) => setFormData({...formData, period: e.target.value})}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none focus:bg-white focus:border-sky-500 transition-all text-[13px] font-medium"
-                      placeholder="e.g. Jan 2022 - Present"
-                    />
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Job Type</label>
+                    <select value={formData.type} onChange={(e) => setFormData({...formData, type: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none text-[13px] font-medium focus:bg-white focus:border-sky-500">
+                      <option value="Onsite">Onsite</option>
+                      <option value="Remote">Remote</option>
+                      <option value="Hybrid">Hybrid</option>
+                    </select>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Description</label>
-                    <textarea 
-                      required
-                      value={formData.description}
-                      onChange={(e) => setFormData({...formData, description: e.target.value})}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none focus:bg-white focus:border-sky-500 transition-all text-[13px] font-medium h-24"
-                      placeholder="Your responsibilities..."
-                    />
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Duration</label>
+                    <input required value={formData.duration} onChange={(e) => setFormData({...formData, duration: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none text-[13px] font-medium focus:bg-white focus:border-sky-500" placeholder="e.g. 2021 - Present" />
                   </div>
                 </div>
-                <div className="flex gap-3 mt-8">
-                  <button 
-                    type="submit"
-                    disabled={loading}
-                    className="flex-1 py-4 bg-slate-900 text-white rounded font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-sky-600 transition-all shadow-lg"
-                  >
-                    {loading ? <Loader2 className="animate-spin" size={16} /> : <><Save size={16} /> {editingId ? 'Update' : 'Save'}</>}
-                  </button>
-                  <button 
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                    className="px-8 py-4 bg-slate-100 text-slate-600 rounded font-black text-[11px] uppercase tracking-widest hover:bg-slate-200 transition-all"
-                  >
-                    Cancel
-                  </button>
+                <div className="space-y-1 mt-4">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Location</label>
+                  <input required value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none text-[13px] font-medium focus:bg-white focus:border-sky-500" placeholder="e.g. Dhaka, Bangladesh" />
                 </div>
+                <div className="space-y-1 mt-4">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Description</label>
+                  <textarea rows={4} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none text-[13px] font-medium focus:bg-white focus:border-sky-500 resize-none" placeholder="Describe your roles..."></textarea>
+                </div>
+                <div className="space-y-1 mt-4">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Display Order</label>
+                  <input type="number" value={formData.order} onChange={(e) => setFormData({...formData, order: parseInt(e.target.value)})} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none text-[13px] font-medium focus:bg-white focus:border-sky-500" />
+                </div>
+                <button className="w-full py-4 bg-slate-900 text-white rounded font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-sky-600 transition-all shadow-lg mt-8">
+                  <Save size={16} /> {editingId ? 'Update Experience' : 'Save Experience'}
+                </button>
               </form>
             </motion.div>
           </div>

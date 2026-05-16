@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 
-const ExperienceSchema = new mongoose.Schema({
-  role: { type: String, required: true },
+const experienceSchema = new mongoose.Schema({
+  designation: { type: String, required: true },
   company: { type: String, required: true },
-  period: { type: String, required: true },
-  type: { type: String, required: true }, // e.g. On-site, Remote
-  icon: { type: String, default: 'Briefcase' },
+  location: { type: String, required: true },
+  type: { type: String, enum: ['Onsite', 'Remote', 'Hybrid'], default: 'Onsite' },
+  duration: { type: String, required: true },
+  description: { type: String },
   order: { type: Number, default: 0 }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Experience', ExperienceSchema);
+module.exports = mongoose.model('Experience', experienceSchema);

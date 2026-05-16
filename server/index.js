@@ -248,6 +248,16 @@ app.post('/api/notifications/mark-read', auth, async (req, res) => {
   }
 });
 
+// Skills
+app.get('/api/skills', async (req, res) => {
+  try {
+    const skills = await Skill.find().sort({ order: 1 });
+    res.json(skills);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Activity Logs
 app.get('/api/activity-logs', auth, async (req, res) => {
   try {
