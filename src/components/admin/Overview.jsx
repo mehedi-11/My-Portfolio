@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Layers, Briefcase, MessageSquare, UserPlus, TrendingUp, Clock, ArrowUpRight } from 'lucide-react';
+import { Layers, Briefcase, MessageSquare, UserPlus, TrendingUp, Clock, ArrowUpRight, Settings } from 'lucide-react';
 import { portfolioAPI, messageAPI } from '../../api';
 
 const Overview = () => {
