@@ -138,7 +138,7 @@ const SettingsManager = () => {
               </div>
             </div>
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Phone / WhatsApp</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Phone Number</label>
               <div className="relative">
                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                 <input 
@@ -150,15 +150,28 @@ const SettingsManager = () => {
             </div>
           </div>
 
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Location Address</label>
-            <div className="relative">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-              <input 
-                type="text" value={settingsData.address}
-                onChange={(e) => setSettingsData({...settingsData, address: e.target.value})}
-                className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none text-[13px] font-medium focus:bg-white focus:border-sky-500"
-              />
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">WhatsApp Number</label>
+              <div className="relative">
+                <MessageSquare className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                <input 
+                  type="text" value={settingsData.whatsapp}
+                  onChange={(e) => setSettingsData({...settingsData, whatsapp: e.target.value})}
+                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none text-[13px] font-medium focus:bg-white focus:border-sky-500"
+                />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Location Address</label>
+              <div className="relative">
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                <input 
+                  type="text" value={settingsData.address}
+                  onChange={(e) => setSettingsData({...settingsData, address: e.target.value})}
+                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none text-[13px] font-medium focus:bg-white focus:border-sky-500"
+                />
+              </div>
             </div>
           </div>
 
