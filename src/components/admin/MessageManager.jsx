@@ -46,28 +46,55 @@ const MessageManager = ({ fetchNotifications }) => {
 
   return (
     <div className="space-y-6">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email</p>
-                    <a href={`mailto:${msg.email}`} className="text-sm font-bold text-sky-600 hover:underline">{msg.email}</a>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-slate-50 rounded flex items-center justify-center text-slate-400"><Calendar size={18} /></div>
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Received</p>
-                    <p className="text-sm font-bold text-slate-900">{new Date(msg.createdAt).toLocaleDateString()}</p>
-                  </div>
-                </div>
-              </div>
+      <div className="flex justify-between items-center mb-2">
+        <div>
+          <h3 className="text-lg font-black text-slate-900">Contact Inquiries</h3>
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">{messages.length} Messages total</p>
+        </div>
+        <div className="flex items-center gap-2 text-emerald-500 bg-emerald-50 px-3 py-1.5 rounded text-[10px] font-black uppercase tracking-widest">
+           <CheckCircle size={14} /> All Read
+        </div>
+      </div>
 
-              <div className="flex-1 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-slate-50 md:pl-8">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Subject: {msg.subject}</p>
-                <div className="bg-slate-50 p-6 rounded">
-                  <p className="text-sm text-slate-600 font-medium leading-relaxed whitespace-pre-wrap">{msg.message}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="bg-white rounded border border-slate-100 overflow-hidden shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-100">
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sender</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Message</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {messages.map((msg) => (
+                <tr key={msg._id} className="hover:bg-slate-50/50 transition-colors group">
+                  <td className="px-6 py-4">
+                    <div className="flex flex-col">
+                      <span className="text-[13px] font-bold text-slate-900">{msg.name}</span>
+                      <span className="text-[11px] text-slate-400 flex items-center gap-1"><Mail size={10} /> {msg.email}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 max-w-xs">
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-black text-slate-900 uppercase tracking-tight truncate">{msg.subject}</span>
+                      <p className="text-[11px] text-slate-500 line-clamp-1">{msg.message}</p>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1"><Calendar size={12} /> {new Date(msg.createdAt).toLocaleDateString()}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={() => handleDelete(msg._id)} className="p-2 text-red-500 hover:bg-red-50 rounded transition-all"><Trash2 size={16} /></button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
