@@ -41,6 +41,8 @@ export const portfolioAPI = {
   addSkill: (data) => api.post('/skills', data),
   updateSkill: (id, data) => api.put(`/skills/${id}`, data),
   deleteSkill: (id) => api.delete(`/skills/${id}`),
+
+  getSettings: () => api.get('/settings'),
 };
 
 export const messageAPI = {
