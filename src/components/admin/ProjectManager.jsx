@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { portfolioAPI } from '../../api';
-import { Plus, Pencil, Trash2, Save, Loader2, X, ExternalLink, Github, Layers } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, Loader2, X, ExternalLink, Github, Code2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ProjectManager = () => {
@@ -14,7 +14,6 @@ const ProjectManager = () => {
     slug: '',
     description: '',
     technologies: [],
-    image: '',
     live: '',
     github: '',
     order: 0
@@ -63,7 +62,6 @@ const ProjectManager = () => {
       slug: project.slug,
       description: project.description,
       technologies: project.technologies || [],
-      image: project.image || '',
       live: project.live || '',
       github: project.github || '',
       order: project.order || 0
@@ -86,7 +84,7 @@ const ProjectManager = () => {
   };
 
   const resetForm = () => {
-    setFormData({ title: '', slug: '', description: '', technologies: [], image: '', live: '', github: '', order: 0 });
+    setFormData({ title: '', slug: '', description: '', technologies: [], live: '', github: '', order: 0 });
     setEditingId(null);
   };
 
@@ -121,7 +119,7 @@ const ProjectManager = () => {
           <table className="w-full text-left">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100">
-                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Preview</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
                 <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Project Details</th>
                 <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Technologies</th>
                 <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
@@ -131,8 +129,8 @@ const ProjectManager = () => {
               {projects.map((project) => (
                 <tr key={project._id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-6 py-4">
-                    <div className="w-12 h-12 rounded bg-slate-100 overflow-hidden border border-slate-100 flex items-center justify-center">
-                       {project.image ? <img src={project.image} alt="" className="w-full h-full object-cover" /> : <Layers className="text-slate-300" size={20} />}
+                    <div className="w-10 h-10 rounded bg-slate-50 flex items-center justify-center text-sky-600 border border-slate-100">
+                       <Code2 size={20} />
                     </div>
                   </td>
                   <td className="px-6 py-4">
@@ -143,7 +141,7 @@ const ProjectManager = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-wrap gap-1">
-                      {project.technologies.slice(0, 3).map((tech, i) => (
+                      {(project.technologies || []).slice(0, 3).map((tech, i) => (
                         <span key={i} className="text-[9px] font-black bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded uppercase tracking-tighter">{tech}</span>
                       ))}
                       {project.technologies.length > 3 && <span className="text-[9px] font-black text-slate-300">+{project.technologies.length - 3}</span>}
@@ -226,14 +224,6 @@ const ProjectManager = () => {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Image URL</label>
-                    <input 
-                      value={formData.image}
-                      onChange={(e) => setFormData({...formData, image: e.target.value})}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none focus:bg-white focus:border-sky-500 transition-all text-[13px] font-medium"
-                    />
-                  </div>
-                  <div className="space-y-1">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Live URL</label>
                     <input 
                       value={formData.live}
@@ -241,7 +231,7 @@ const ProjectManager = () => {
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none focus:bg-white focus:border-sky-500 transition-all text-[13px] font-medium"
                     />
                   </div>
-                  <div className="space-y-1">
+                  <div className="md:col-span-2 space-y-1">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">GitHub URL</label>
                     <input 
                       value={formData.github}
