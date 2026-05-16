@@ -14,11 +14,11 @@
 
   body {
     @apply text-slate-900 antialiased selection:bg-sky-100 selection:text-sky-900;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Cause', 'Inter', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Cause', 'Outfit', sans-serif;
   }
 }
 
