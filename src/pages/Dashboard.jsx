@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import { LayoutDashboard, Briefcase, GraduationCap, Layers, MessageSquare, UserPlus, LogOut, Settings, ChevronRight, Bell, X, ShieldCheck, Code } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import ProjectManager from '../components/admin/ProjectManager';
 import ExperienceManager from '../components/admin/ExperienceManager';
 import EducationManager from '../components/admin/EducationManager';
