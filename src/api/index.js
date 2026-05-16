@@ -66,6 +66,7 @@ export const settingsAPI = {
   getSettings: portfolioAPI.getSettings,
   updateSettings: portfolioAPI.updateSettings,
   getActivityLogs: () => api.get('/activity-logs'),
+  clearActivityLogs: () => api.delete('/activity-logs'),
 };
 
 export default api;

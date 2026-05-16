@@ -268,6 +268,16 @@ app.get('/api/activity-logs', auth, async (req, res) => {
   }
 });
 
+app.delete('/api/activity-logs', auth, async (req, res) => {
+  try {
+    await ActivityLog.deleteMany({});
+    await logActivity('Cleared Logs', 'All activity logs were deleted', 'Security', req);
+    res.json({ message: 'All logs cleared' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Settings
 app.get('/api/settings', async (req, res) => {
   try {
