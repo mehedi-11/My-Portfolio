@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, User, Lock, Loader2, CheckCircle, Mail, Phone, MapPin, Facebook, Linkedin, Github, Instagram, Globe, FileText } from 'lucide-react';
+import { Save, User, Lock, Loader2, CheckCircle, Mail, Phone, MapPin, Facebook, Linkedin, Github, Instagram, Globe, FileText, MessageSquare } from 'lucide-react';
 import { authAPI, settingsAPI } from '../../api';
 
 const SettingsManager = () => {

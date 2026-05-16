@@ -15,6 +15,7 @@ const Skill = require('./models/Skill');
 const LoginAttempt = require('./models/LoginAttempt');
 const Settings = require('./models/Settings');
 const ActivityLog = require('./models/ActivityLog');
+const Hire = require('./models/Hire');
 
 // Helper to log activity
 const logActivity = async (action, details, category = 'CRUD', req = null) => {
