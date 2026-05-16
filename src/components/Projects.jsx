@@ -1,23 +1,38 @@
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, BookOpen, Code2 } from 'lucide-react';
+import { ExternalLink, Github, BookOpen, Code2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { usePortfolio } from '../context/PortfolioContext';
 
 const Projects = () => {
   const { projects, loading } = usePortfolio();
 
+  // Limit to 8 projects for the home page
+  const displayProjects = projects.slice(0, 8);
+  const hasMoreProjects = projects.length > 8;
+
   return (
     <section id="projects" className="section-padding bg-white relative">
       <div className="container-custom">
-        <div className="mb-16">
-          <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px] mb-4 block">Portfolio</span>
-          <h2 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter mb-6 leading-tight">
-            My <br />
-            <span className="text-sky-600">Projects.</span>
-          </h2>
-          <p className="text-base text-slate-500 font-medium max-w-xl leading-relaxed">
-            Here are some of the projects I have worked on recently.
-          </p>
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <div className="max-w-xl">
+            <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px] mb-4 block">Portfolio</span>
+            <h2 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter mb-6 leading-tight">
+              My <br />
+              <span className="text-sky-600">Projects.</span>
+            </h2>
+            <p className="text-base text-slate-500 font-medium leading-relaxed">
+              Here are some of the projects I have worked on recently.
+            </p>
+          </div>
+          
+          {hasMoreProjects && (
+            <Link 
+              to="/projects"
+              className="group flex items-center gap-3 text-slate-900 font-black text-[11px] uppercase tracking-widest hover:text-sky-600 transition-all"
+            >
+              View All Projects <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+          )}
         </div>
 
         {loading && projects.length === 0 ? (
@@ -26,7 +41,7 @@ const Projects = () => {
           </div>
         ) : (
           <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
-            {projects.map((project, index) => {
+            {displayProjects.map((project, index) => {
               const hasGithub = project.github && project.github !== "#";
               const hasLive = project.live && project.live !== "#";
 
@@ -94,6 +109,17 @@ const Projects = () => {
                 </motion.div>
               );
             })}
+          </div>
+        )}
+
+        {hasMoreProjects && (
+          <div className="mt-20 text-center">
+            <Link 
+              to="/projects"
+              className="inline-flex items-center gap-3 px-10 py-5 bg-white border-2 border-slate-900 text-slate-900 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-xl shadow-slate-100"
+            >
+              Explore Full Gallery <ArrowRight size={20} />
+            </Link>
           </div>
         )}
       </div>
