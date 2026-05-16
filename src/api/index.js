@@ -21,7 +21,6 @@ export const authAPI = {
 };
 
 export const portfolioAPI = {
-  getAll: () => api.get('/portfolio'),
   getProjects: () => api.get('/projects'),
   addProject: (data) => api.post('/projects', data),
   updateProject: (id, data) => api.put(`/projects/${id}`, data),
@@ -42,7 +41,9 @@ export const portfolioAPI = {
   updateSkill: (id, data) => api.put(`/skills/${id}`, data),
   deleteSkill: (id) => api.delete(`/skills/${id}`),
 
+  // Critical: getSettings must be here for PortfolioContext
   getSettings: () => api.get('/settings'),
+  updateSettings: (data) => api.put('/settings', data),
 };
 
 export const messageAPI = {
@@ -60,9 +61,10 @@ export const notifyAPI = {
   markRead: (type) => api.post('/notifications/mark-read', { type }),
 };
 
+// Also exporting as settingsAPI for backward compatibility in Admin components
 export const settingsAPI = {
-  getSettings: () => api.get('/settings'),
-  updateSettings: (data) => api.put('/settings', data),
+  getSettings: portfolioAPI.getSettings,
+  updateSettings: portfolioAPI.updateSettings,
   getActivityLogs: () => api.get('/activity-logs'),
 };
 
