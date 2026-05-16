@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, MessageSquare, CheckCircle, AlertCircle } from 'lucide-react';
-import { personalInfo } from '../data/portfolio';
+import { usePortfolio } from '../context/PortfolioContext';
 import { messageAPI } from '../api';
 import SuccessModal from './SuccessModal';
 
 const Contact = () => {
   const formRef = useRef();
+  const { personalInfo } = usePortfolio();
   const [status, setStatus] = useState('idle'); // idle, sending, success, error
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -58,54 +59,66 @@ const Contact = () => {
             </p>
 
             <div className="space-y-6 mb-12">
-               <div className="flex items-center gap-5 group">
-                  <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-sky-600 transition-colors">
-                    <Mail size={20} />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Email Me</p>
-                    <a href={`mailto:${personalInfo.email}`} className="text-base font-bold text-slate-900 hover:text-sky-600 transition-colors">{personalInfo.email}</a>
-                  </div>
-               </div>
+               {personalInfo.email && (
+                 <div className="flex items-center gap-5 group">
+                    <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-sky-600 transition-colors">
+                      <Mail size={20} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Email Me</p>
+                      <a href={`mailto:${personalInfo.email}`} className="text-base font-bold text-slate-900 hover:text-sky-600 transition-colors">{personalInfo.email}</a>
+                    </div>
+                 </div>
+               )}
                
-               <div className="flex items-center gap-5 group">
-                  <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-sky-600 transition-colors">
-                    <Phone size={20} />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Call Me</p>
-                    <a href={`tel:${personalInfo.phone}`} className="text-base font-bold text-slate-900 hover:text-sky-600 transition-colors">{personalInfo.phone}</a>
-                  </div>
-               </div>
+               {personalInfo.phone && (
+                 <div className="flex items-center gap-5 group">
+                    <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-sky-600 transition-colors">
+                      <Phone size={20} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Call Me</p>
+                      <a href={`tel:${personalInfo.phone}`} className="text-base font-bold text-slate-900 hover:text-sky-600 transition-colors">{personalInfo.phone}</a>
+                    </div>
+                 </div>
+               )}
 
-               <div className="flex items-center gap-5 group">
-                  <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-sky-600 transition-colors">
-                    <MessageSquare size={20} />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">WhatsApp</p>
-                    <a href={`https://wa.me/${personalInfo.whatsapp}`} target="_blank" rel="noreferrer" className="text-base font-bold text-slate-900 hover:text-sky-600 transition-colors">{personalInfo.whatsapp}</a>
-                  </div>
-               </div>
+               {personalInfo.whatsapp && (
+                 <div className="flex items-center gap-5 group">
+                    <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-sky-600 transition-colors">
+                      <MessageSquare size={20} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">WhatsApp</p>
+                      <a href={`https://wa.me/${personalInfo.whatsapp}`} target="_blank" rel="noreferrer" className="text-base font-bold text-slate-900 hover:text-sky-600 transition-colors">{personalInfo.whatsapp}</a>
+                    </div>
+                 </div>
+               )}
 
-               <div className="flex items-center gap-5 group">
-                  <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-sky-600 transition-colors">
-                    <MapPin size={20} />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Location</p>
-                    <p className="text-base font-bold text-slate-900">{personalInfo.location}</p>
-                  </div>
-               </div>
+               {personalInfo.address && (
+                 <div className="flex items-center gap-5 group">
+                    <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-sky-600 transition-colors">
+                      <MapPin size={20} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Location</p>
+                      <p className="text-base font-bold text-slate-900">{personalInfo.address}</p>
+                    </div>
+                 </div>
+               )}
             </div>
 
             <div className="flex gap-3">
-              <a href={personalInfo.github} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all">
-                <Github size={18} />
-              </a>
-              <a href={personalInfo.linkedin} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all">
-                <Linkedin size={18} />
-              </a>
+              {personalInfo.github && (
+                <a href={personalInfo.github} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all">
+                  <Github size={18} />
+                </a>
+              )}
+              {personalInfo.linkedin && (
+                <a href={personalInfo.linkedin} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-sky-600 hover:border-sky-600 transition-all">
+                  <Linkedin size={18} />
+                </a>
+              )}
             </div>
           </div>
 
