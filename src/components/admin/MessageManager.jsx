@@ -109,7 +109,7 @@ const MessageManager = ({ fetchNotifications }) => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex justify-end gap-2 opacity-100">
                       <button
                         onClick={() => handleOpenModal(msg)}
                         className="p-2 text-rose-600 hover:bg-rose-50 rounded transition-all"

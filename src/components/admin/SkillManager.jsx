@@ -144,7 +144,7 @@ const SkillManager = () => {
                 <span className="text-[9px] font-black text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-150">
                   Order: {item.order || 0}
                 </span>
-                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-1 opacity-100">
                   <button onClick={() => handleEdit(item)} className="p-2 text-rose-600 hover:bg-rose-50 rounded"><Pencil size={14} /></button>
                   <button onClick={() => handleDelete(item._id)} className="p-2 text-red-500 hover:bg-red-50 rounded"><Trash2 size={14} /></button>
                 </div>

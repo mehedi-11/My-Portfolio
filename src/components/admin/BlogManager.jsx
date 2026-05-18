@@ -173,7 +173,7 @@ const BlogManager = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex justify-end gap-2 opacity-100">
                       <button onClick={() => handleEdit(blog)} className="p-2 text-rose-600 hover:bg-rose-50 rounded"><Pencil size={16} /></button>
                       <button onClick={() => handleDelete(blog._id)} className="p-2 text-red-500 hover:bg-red-50 rounded"><Trash2 size={16} /></button>
                     </div>
