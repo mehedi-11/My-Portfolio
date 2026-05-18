@@ -41,7 +41,9 @@ const SkillManager = () => {
   async function fetchSkills() {
     try {
       const { data } = await portfolioAPI.getSkills();
-      setSkills(data);
+      // Sort locally as a fallback just in case
+      const sorted = [...data].sort((a, b) => (a.order || 0) - (b.order || 0));
+      setSkills(sorted);
     } catch (err) {
       console.error(err);
     } finally {
@@ -81,7 +83,8 @@ const SkillManager = () => {
   const handleEdit = (item) => {
     setFormData({
       ...item,
-      items: Array.isArray(item.items) ? item.items.join(', ') : item.items
+      items: Array.isArray(item.items) ? item.items.join(', ') : item.items,
+      order: item.order || 0
     });
     setEditingId(item._id);
     setShowModal(true);
@@ -137,9 +140,14 @@ const SkillManager = () => {
               <div className="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center text-rose-600">
                 {categoryIcons[item.category.toLowerCase()] || <HelpCircle size={18} />}
               </div>
-              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => handleEdit(item)} className="p-2 text-rose-600 hover:bg-rose-50 rounded"><Pencil size={14} /></button>
-                <button onClick={() => handleDelete(item._id)} className="p-2 text-red-500 hover:bg-red-50 rounded"><Trash2 size={14} /></button>
+              <div className="flex gap-2 items-center">
+                <span className="text-[9px] font-black text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-150">
+                  Order: {item.order || 0}
+                </span>
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => handleEdit(item)} className="p-2 text-rose-600 hover:bg-rose-50 rounded"><Pencil size={14} /></button>
+                  <button onClick={() => handleDelete(item._id)} className="p-2 text-red-500 hover:bg-red-50 rounded"><Trash2 size={14} /></button>
+                </div>
               </div>
             </div>
             <h4 className="text-base font-black text-slate-900 mb-1">{item.title}</h4>
@@ -176,8 +184,8 @@ const SkillManager = () => {
                 <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-900 p-1"><X size={18} /></button>
               </div>
               <form onSubmit={handleSubmit} className="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-1 col-span-1">
                     <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Category</label>
                     <select
                       value={formData.category}
@@ -203,7 +211,7 @@ const SkillManager = () => {
                       <option value="Other">Other</option>
                     </select>
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-1 col-span-1">
                     <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Display Title</label>
                     <input
                       required
@@ -211,6 +219,18 @@ const SkillManager = () => {
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none focus:bg-white focus:border-rose-500 text-[13px] font-medium"
                       placeholder="e.g. Frontend Architecture"
+                    />
+                  </div>
+                  <div className="space-y-1 col-span-1">
+                    <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Display Order</label>
+                    <input
+                      type="number"
+                      min="0"
+                      required
+                      value={formData.order}
+                      onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded outline-none focus:bg-white focus:border-rose-500 text-[13px] font-medium"
+                      placeholder="0"
                     />
                   </div>
                 </div>
