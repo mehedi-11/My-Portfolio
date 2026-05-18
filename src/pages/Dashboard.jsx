@@ -15,24 +15,22 @@ import { ClipboardList } from 'lucide-react';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
-  const [adminName, setAdminName] = useState('Admin');
+  const [adminName] = useState(localStorage.getItem('adminUser') || 'Admin');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isNotifyOpen, setIsNotifyOpen] = useState(false);
   const [notifications, setNotifications] = useState({ total: 0, messages: 0, proposals: 0, security: 0 });
 
   useEffect(() => {
-    setAdminName(localStorage.getItem('adminUser') || 'Admin');
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 30000); // Check every 30s
     return () => clearInterval(interval);
   }, []);
 
-  const fetchNotifications = async () => {
+  async function fetchNotifications() {
     try {
       const { data } = await notifyAPI.getCounts();
       setNotifications(data);
-    } catch (err) {
-      console.error("Failed to fetch notifications");
+    } catch (err) { console.error(err, "Failed to fetch notifications");
     }
   };
 

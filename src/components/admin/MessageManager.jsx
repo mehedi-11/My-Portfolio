@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { messageAPI, notifyAPI } from '../../api';
-import { Trash2, Loader2, MessageSquare, Mail, Calendar, CheckCircle } from 'lucide-react';
+import { Trash2, Loader2, Mail, Calendar, CheckCircle } from 'lucide-react';
 
 const MessageManager = ({ fetchNotifications }) => {
   const [messages, setMessages] = useState([]);
@@ -11,7 +11,7 @@ const MessageManager = ({ fetchNotifications }) => {
     markAsRead();
   }, []);
 
-  const fetchMessages = async () => {
+  async function fetchMessages() {
     try {
       const { data } = await messageAPI.getContacts();
       setMessages(data);
@@ -22,7 +22,7 @@ const MessageManager = ({ fetchNotifications }) => {
     }
   };
 
-  const markAsRead = async () => {
+  async function markAsRead() {
     try {
       await notifyAPI.markRead('messages');
       if (fetchNotifications) fetchNotifications();
@@ -31,12 +31,13 @@ const MessageManager = ({ fetchNotifications }) => {
     }
   };
 
-  const handleDelete = async (id) => {
+  async function handleDelete(id) {
     if (window.confirm('Are you sure?')) {
       try {
         await messageAPI.deleteContact(id);
         fetchMessages();
       } catch (err) {
+        console.error(err);
         alert('Failed to delete');
       }
     }

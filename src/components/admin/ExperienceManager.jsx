@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { portfolioAPI } from '../../api';
-import { Plus, Pencil as Edit2, Trash2, Save, X, Loader2, Calendar, MapPin, Briefcase } from 'lucide-react';
+import { Plus, Pencil as Edit2, Trash2, Save, X, Loader2, Calendar, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ExperienceManager = () => {
@@ -15,7 +15,7 @@ const ExperienceManager = () => {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
+  async function fetchData() {
     try {
       const { data } = await portfolioAPI.getExperience();
       setData(data);
@@ -26,7 +26,7 @@ const ExperienceManager = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
     try {
       if (editingId) {
@@ -49,7 +49,7 @@ const ExperienceManager = () => {
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
+  async function handleDelete(id) {
     if (window.confirm('Delete this entry?')) {
       try {
         await portfolioAPI.deleteExperience(id);

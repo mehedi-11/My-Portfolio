@@ -20,7 +20,7 @@ export const PortfolioProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    async function fetchData() {
       try {
         const [projectsRes, expRes, eduRes, skillsRes, settingsRes] = await Promise.all([
           portfolioAPI.getProjects(),
@@ -72,4 +72,5 @@ export const PortfolioProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const usePortfolio = () => useContext(PortfolioContext);

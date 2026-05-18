@@ -10,7 +10,7 @@ const Contact = () => {
   const [status, setStatus] = useState('idle'); // idle, sending, success, error
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
     setStatus('sending');
 

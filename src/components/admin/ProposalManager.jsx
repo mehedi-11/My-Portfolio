@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { messageAPI, notifyAPI } from '../../api';
-import { Trash2, Loader2, UserPlus, Building2, DollarSign, Calendar, CheckCircle } from 'lucide-react';
+import { Trash2, Loader2, Calendar, CheckCircle } from 'lucide-react';
 
 const ProposalManager = ({ fetchNotifications }) => {
   const [proposals, setProposals] = useState([]);
@@ -11,7 +11,7 @@ const ProposalManager = ({ fetchNotifications }) => {
     markAsRead();
   }, []);
 
-  const fetchProposals = async () => {
+  async function fetchProposals() {
     try {
       const { data } = await messageAPI.getProposals();
       setProposals(data);
@@ -22,7 +22,7 @@ const ProposalManager = ({ fetchNotifications }) => {
     }
   };
 
-  const markAsRead = async () => {
+  async function markAsRead() {
     try {
       await notifyAPI.markRead('proposals');
       if (fetchNotifications) fetchNotifications();
@@ -31,12 +31,13 @@ const ProposalManager = ({ fetchNotifications }) => {
     }
   };
 
-  const handleDelete = async (id) => {
+  async function handleDelete(id) {
     if (window.confirm('Are you sure?')) {
       try {
         await messageAPI.deleteProposal(id);
         fetchProposals();
       } catch (err) {
+        console.error(err);
         alert('Failed to delete');
       }
     }

@@ -14,19 +14,18 @@ const SettingsManager = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const { data } = await settingsAPI.getSettings();
+        if (data) setSettingsData(data);
+      } catch (err) {
+        console.error(err, "Failed to fetch settings");
+      }
+    }
     fetchSettings();
   }, []);
 
-  const fetchSettings = async () => {
-    try {
-      const { data } = await settingsAPI.getSettings();
-      if (data) setSettingsData(data);
-    } catch (err) {
-      console.error("Failed to fetch settings");
-    }
-  };
-
-  const handleProfileSubmit = async (e) => {
+  async function handleProfileSubmit(e) {
     e.preventDefault();
     if (profileData.password && profileData.password !== profileData.confirmPassword) {
       setError('Passwords do not match');
@@ -42,13 +41,14 @@ const SettingsManager = () => {
       setSuccess({ ...success, profile: true });
       setTimeout(() => setSuccess({ ...success, profile: false }), 3000);
     } catch (err) {
+      console.error(err);
       setError('Failed to update profile');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSettingsSubmit = async (e) => {
+  async function handleSettingsSubmit(e) {
     e.preventDefault();
     setLoading(true);
     try {
@@ -56,6 +56,7 @@ const SettingsManager = () => {
       setSuccess({ ...success, settings: true });
       setTimeout(() => setSuccess({ ...success, settings: false }), 3000);
     } catch (err) {
+      console.error(err);
       setError('Failed to update settings');
     } finally {
       setLoading(false);

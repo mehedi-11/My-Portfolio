@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { portfolioAPI } from '../../api';
-import { Plus, Pencil, Trash2, Save, Loader2, X, ExternalLink, Github, Code2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, Loader2, X, Code2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ProjectManager = () => {
@@ -23,7 +23,7 @@ const ProjectManager = () => {
     fetchProjects();
   }, []);
 
-  const fetchProjects = async () => {
+  async function fetchProjects() {
     try {
       const { data } = await portfolioAPI.getProjects();
       setProjects(data);
@@ -34,7 +34,7 @@ const ProjectManager = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     try {
@@ -49,6 +49,7 @@ const ProjectManager = () => {
       setShowModal(false);
       resetForm();
     } catch (err) {
+      console.error(err);
       setMessage({ text: 'Failed to save project.', type: 'error' });
     } finally {
       setLoading(false);
@@ -70,13 +71,14 @@ const ProjectManager = () => {
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
+  async function handleDelete(id) {
     if (window.confirm('Are you sure you want to delete this project?')) {
       try {
         await portfolioAPI.deleteProject(id);
         fetchProjects();
         setMessage({ text: 'Project deleted.', type: 'success' });
       } catch (err) {
+        console.error(err);
         setMessage({ text: 'Delete failed.', type: 'error' });
       }
       setTimeout(() => setMessage({ text: '', type: '' }), 3000);

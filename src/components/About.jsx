@@ -3,7 +3,7 @@ import { GraduationCap, MapPin, Coffee } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 
 const About = () => {
-  const { education, personalInfo, loading } = usePortfolio();
+  const { education, personalInfo } = usePortfolio();
 
   return (
     <section id="about" className="section-padding bg-white relative overflow-hidden">

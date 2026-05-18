@@ -16,7 +16,7 @@ const HireModal = ({ isOpen, onClose }) => {
 
   if (!isOpen && !showSuccess) return null;
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
     setStatus('sending');
 

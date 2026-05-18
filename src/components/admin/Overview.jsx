@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Layers, Briefcase, MessageSquare, UserPlus, TrendingUp, Clock, ArrowUpRight, Settings } from 'lucide-react';
+import { Layers, MessageSquare, UserPlus, TrendingUp, Clock, ArrowUpRight, Settings } from 'lucide-react';
 import { portfolioAPI, messageAPI } from '../../api';
 
 const Overview = () => {
@@ -13,7 +13,7 @@ const Overview = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    async function fetchStats() {
       try {
         const [projects, experience, messages, proposals, skills] = await Promise.all([
           portfolioAPI.getProjects(),

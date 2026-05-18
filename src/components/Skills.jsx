@@ -15,18 +15,7 @@ const Skills = () => {
 
   // Convert the skills object/array from context into a displayable list
   // Note: PortfolioContext now provides skills as a categorized object
-  const skillList = Object.keys(skills || {}).map(cat => {
-    const config = categoryConfigs[cat.toLowerCase()] || { icon: Globe, color: "from-slate-500 to-slate-600", bg: "bg-slate-50" };
-    
-    // We need to find the full category object from the backend response if possible
-    // Actually, let's assume we might need to update PortfolioContext to keep the full objects
-    return {
-      category: cat,
-      ...config,
-      // The context currently only stores the items array in the 'skills' object
-      // We might need to adjust this if we want to show dynamic titles/descriptions
-    };
-  });
+
 
   return (
     <section id="skills" className="section-padding bg-[#fcfcfd]">

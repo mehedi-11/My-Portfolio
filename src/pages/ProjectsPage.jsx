@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Code2, ExternalLink, Github, BookOpen, ArrowLeft } from 'lucide-react';
+import { Search, Code2, Github, BookOpen, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { usePortfolio } from '../context/PortfolioContext';
 

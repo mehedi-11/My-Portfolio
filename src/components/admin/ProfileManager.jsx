@@ -8,7 +8,7 @@ const ProfileManager = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (formData.password && formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');

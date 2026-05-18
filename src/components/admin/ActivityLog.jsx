@@ -12,7 +12,7 @@ const ActivityLog = () => {
     fetchLogs();
   }, []);
 
-  const fetchLogs = async () => {
+  async function fetchLogs() {
     setLoading(true);
     try {
       const { data } = await settingsAPI.getActivityLogs();
@@ -24,7 +24,7 @@ const ActivityLog = () => {
     }
   };
 
-  const handleClearLogs = async () => {
+  async function handleClearLogs() {
     if (window.confirm('Are you sure you want to delete ALL activity logs? This cannot be undone.')) {
       setClearing(true);
       try {

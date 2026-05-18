@@ -28,7 +28,7 @@ const SkillManager = () => {
     fetchSkills();
   }, []);
 
-  const fetchSkills = async () => {
+  async function fetchSkills() {
     try {
       const { data } = await portfolioAPI.getSkills();
       setSkills(data);
@@ -39,7 +39,7 @@ const SkillManager = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     
@@ -61,6 +61,7 @@ const SkillManager = () => {
       setShowModal(false);
       resetForm();
     } catch (err) {
+      console.error(err);
       setMessage({ text: 'Failed to save.', type: 'error' });
     } finally {
       setLoading(false);
@@ -77,13 +78,14 @@ const SkillManager = () => {
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
+  async function handleDelete(id) {
     if (window.confirm('Delete this category?')) {
       try {
         await portfolioAPI.deleteSkill(id);
         fetchSkills();
         setMessage({ text: 'Deleted.', type: 'success' });
       } catch (err) {
+        console.error(err);
         setMessage({ text: 'Delete failed.', type: 'error' });
       }
       setTimeout(() => setMessage({ text: '', type: '' }), 3000);
