@@ -12,7 +12,7 @@ import ActivityLog from '../components/admin/ActivityLog';
 import Overview from '../components/admin/Overview';
 import BlogManager from '../components/admin/BlogManager';
 import { notifyAPI } from '../api';
-import { ClipboardList } from 'lucide-react';
+import { ClipboardList, FileText } from 'lucide-react';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -43,11 +43,11 @@ const Dashboard = () => {
 
   const tabs = [
     { id: 'overview', label: 'Dashboard', icon: LayoutDashboard, component: Overview },
+    { id: 'projects', label: 'Projects', icon: Layers, component: ProjectManager },
+    { id: 'blogs', label: 'Blogs', icon: FileText, component: BlogManager },
     { id: 'education', label: 'Education', icon: GraduationCap, component: EducationManager },
     { id: 'experience', label: 'Experience', icon: Briefcase, component: ExperienceManager },
-    { id: 'projects', label: 'Projects', icon: Layers, component: ProjectManager },
     { id: 'skills', label: 'Skills', icon: Code, component: SkillManager },
-    { id: 'blogs', label: 'Blogs', icon: ClipboardList, component: BlogManager },
     { id: 'messages', label: 'Contact Msg', icon: MessageSquare, component: MessageManager, badge: notifications.messages },
     { id: 'proposals', label: 'Hire Msg', icon: UserPlus, component: ProposalManager, badge: notifications.proposals },
     { id: 'activity', label: 'Activity Log', icon: ClipboardList, component: ActivityLog },

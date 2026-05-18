@@ -41,17 +41,6 @@ const BlogManager = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 400 * 1024) {
-        setMessage({ text: 'Image size must be less than 400KB', type: 'error' });
-        setTimeout(() => setMessage({ text: '', type: '' }), 3000);
-        return;
-      }
-      const ext = file.name.split('.').pop().toLowerCase();
-      if (ext !== 'svg') {
-        setMessage({ text: 'Only SVG images are allowed', type: 'error' });
-        setTimeout(() => setMessage({ text: '', type: '' }), 3000);
-        return;
-      }
       setFormData({ ...formData, image: file });
       setPreviewImage(URL.createObjectURL(file));
     }
@@ -76,7 +65,7 @@ const BlogManager = () => {
       submitData.append('image', formData.image);
     } else if (!editingId) {
       setLoading(false);
-      setMessage({ text: 'SVG Image is required for new blog', type: 'error' });
+      setMessage({ text: 'Cover image is required for new blog', type: 'error' });
       return;
     }
 
@@ -267,12 +256,12 @@ const BlogManager = () => {
                 </div>
 
                 <div className="space-y-1 mb-4">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Cover Image (SVG, max 400kb)</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Cover Image (Any format, auto-converted to SVG)</label>
                   <div className="flex items-center gap-4">
                     <div className="flex-1 relative">
                       <input 
                         type="file"
-                        accept=".svg"
+                        accept="image/*"
                         onChange={handleImageChange}
                         className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded text-[13px] file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-bold file:bg-sky-50 file:text-sky-600 hover:file:bg-sky-100 cursor-pointer"
                       />

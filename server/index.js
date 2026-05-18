@@ -7,32 +7,14 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const sharp = require('sharp');
 
 const uploadDir = path.join(__dirname, 'uploads', 'blogs');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({ 
-  storage: storage,
-  limits: { fileSize: 400 * 1024 },
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'image/svg+xml' || path.extname(file.originalname).toLowerCase() === '.svg') {
-      cb(null, true);
-    } else {
-      cb(new Error('Only SVG files are allowed and under 400KB!'));
-    }
-  }
-});
+const upload = multer({ storage: multer.memoryStorage() });
 
 const auth = require('./middleware/auth');
 const User = require('./models/User');
@@ -182,12 +164,26 @@ app.get('/api/blogs/:slug', async (req, res) => {
 app.post('/api/blogs', auth, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ message: 'SVG Image is required' });
+      return res.status(400).json({ message: 'Cover Image is required' });
     }
+
+    let imageFilename = Date.now() + '-' + Math.round(Math.random() * 1E9) + '.svg';
+    if (req.file.mimetype === 'image/svg+xml') {
+      fs.writeFileSync(path.join(uploadDir, imageFilename), req.file.buffer);
+    } else {
+      const webpBuffer = await sharp(req.file.buffer)
+        .resize(1200, 600, { fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 60 })
+        .toBuffer();
+      const base64Image = webpBuffer.toString('base64');
+      const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 600"><image href="data:image/webp;base64,${base64Image}" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" /></svg>`;
+      fs.writeFileSync(path.join(uploadDir, imageFilename), svgContent);
+    }
+
     const newBlog = new Blog({
       ...req.body,
       tags: req.body.tags ? JSON.parse(req.body.tags) : [],
-      image: req.file.filename
+      image: imageFilename
     });
     await newBlog.save();
     await logActivity('Added Blog', `Title: ${req.body.title}`, 'CRUD', req);
@@ -203,9 +199,23 @@ app.put('/api/blogs/:id', auth, upload.single('image'), async (req, res) => {
     if (req.body.tags) {
       updateData.tags = JSON.parse(req.body.tags);
     }
+    
     if (req.file) {
-      updateData.image = req.file.filename;
+      let imageFilename = Date.now() + '-' + Math.round(Math.random() * 1E9) + '.svg';
+      if (req.file.mimetype === 'image/svg+xml') {
+        fs.writeFileSync(path.join(uploadDir, imageFilename), req.file.buffer);
+      } else {
+        const webpBuffer = await sharp(req.file.buffer)
+          .resize(1200, 600, { fit: 'inside', withoutEnlargement: true })
+          .webp({ quality: 60 })
+          .toBuffer();
+        const base64Image = webpBuffer.toString('base64');
+        const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 600"><image href="data:image/webp;base64,${base64Image}" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" /></svg>`;
+        fs.writeFileSync(path.join(uploadDir, imageFilename), svgContent);
+      }
+      updateData.image = imageFilename;
     }
+
     const updated = await Blog.findByIdAndUpdate(req.params.id, updateData, { new: true });
     await logActivity('Updated Blog', `ID: ${req.params.id}`, 'CRUD', req);
     res.json(updated);
