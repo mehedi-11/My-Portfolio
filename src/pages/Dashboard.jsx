@@ -282,7 +282,7 @@ const Dashboard = () => {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.18 }}
             >
-              <ActiveComponent fetchNotifications={fetchNotifications} />
+              <ActiveComponent fetchNotifications={fetchNotifications} setActiveTab={setActiveTab} />
             </motion.div>
           </AnimatePresence>
         </div>
