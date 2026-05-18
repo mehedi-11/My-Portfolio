@@ -10,11 +10,21 @@
 
   html {
     scroll-behavior: smooth;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Universal smooth transition for theme switching */
+  body, header, nav, section, footer, div, p, span, a, button, h1, h2, h3, h4, h5, h6 {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
   }
 
   body {
     @apply text-slate-900 antialiased selection:bg-sky-100 selection:text-sky-900;
     font-family: 'Cause', 'Inter', sans-serif;
+  }
+
+  html.dark body {
+    @apply text-slate-100 bg-slate-950 selection:bg-slate-800 selection:text-slate-200;
   }
 
   h1, h2, h3, h4, h5, h6 {

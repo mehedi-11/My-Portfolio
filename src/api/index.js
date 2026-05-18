@@ -77,4 +77,13 @@ export const blogAPI = {
   deleteBlog: (id) => api.delete(`/blogs/${id}`),
 };
 
+export const analyticsAPI = {
+  getAnalytics: () => api.get('/analytics'),
+};
+
+export const backupAPI = {
+  exportBackup: () => api.get('/backup', { responseType: 'blob' }),
+  restoreBackup: (data) => api.post('/backup/restore', data),
+};
+
 export default api;

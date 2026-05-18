@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import { PortfolioProvider } from './context/PortfolioContext.jsx'
+import { ThemeProvider } from './context/ThemeContext.jsx'
 
 window.deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -16,7 +17,9 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <PortfolioProvider>
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
       </PortfolioProvider>
     </BrowserRouter>
   </StrictMode>,

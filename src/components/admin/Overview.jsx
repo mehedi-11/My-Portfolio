@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Layers, MessageSquare, UserPlus, TrendingUp, Clock, ArrowUpRight,
-  Plus, FileText, Zap, Calendar, ArrowRight, Activity, HardDrive
+  Plus, FileText, Zap, Calendar, ArrowRight, Activity, HardDrive,
+  Globe, Laptop, Smartphone, Users
 } from 'lucide-react';
-import { portfolioAPI, messageAPI, blogAPI } from '../../api';
+import { portfolioAPI, messageAPI, blogAPI, analyticsAPI } from '../../api';
 
 const Overview = ({ setActiveTab }) => {
   const [stats, setStats] = useState({
@@ -18,6 +19,13 @@ const Overview = ({ setActiveTab }) => {
   
   const [recentMessages, setRecentMessages] = useState([]);
   const [recentProposals, setRecentProposals] = useState([]);
+  const [analytics, setAnalytics] = useState({
+    totalVisits: 0,
+    uniqueVisitors: 0,
+    deviceStats: { mobilePercent: 0, desktopPercent: 0 },
+    recentVisitors: [],
+    countries: []
+  });
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -30,13 +38,14 @@ const Overview = ({ setActiveTab }) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [projects, experience, messages, proposals, skills, blogs] = await Promise.all([
+        const [projects, experience, messages, proposals, skills, blogs, analyticsRes] = await Promise.all([
           portfolioAPI.getProjects(),
           portfolioAPI.getExperience(),
           messageAPI.getContacts(),
           messageAPI.getProposals(),
           portfolioAPI.getSkills(),
-          blogAPI.getBlogs()
+          blogAPI.getBlogs(),
+          analyticsAPI.getAnalytics()
         ]);
 
         setStats({
@@ -47,6 +56,8 @@ const Overview = ({ setActiveTab }) => {
           skills: skills.data.length,
           blogs: blogs.data.length
         });
+
+        setAnalytics(analyticsRes.data);
 
         // Get top 2 latest messages & proposals
         const sortedMsgs = [...messages.data]
@@ -167,6 +178,120 @@ const Overview = ({ setActiveTab }) => {
             </div>
           </motion.div>
         ))}
+      </div>
+
+      {/* ── Advanced Visitor Traffic Insights (NEW SUGGESTION FEATURE) ── */}
+      <div className="bg-white p-6 rounded-lg border border-slate-100 grid md:grid-cols-3 gap-6">
+        {/* Col 1: Traffic Overview */}
+        <div className="space-y-4">
+          <div>
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <Globe size={15} className="text-rose-600 animate-spin-slow" /> Traffic Overview
+            </h3>
+            <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">Live from Portfolio site</p>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-slate-50/50 border border-slate-100 p-3 rounded-lg text-center">
+              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Total Visits</p>
+              <h4 className="text-xl font-black text-slate-900 mt-1">{analytics.totalVisits}</h4>
+            </div>
+            <div className="bg-slate-50/50 border border-slate-100 p-3 rounded-lg text-center">
+              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Unique IPs</p>
+              <h4 className="text-xl font-black text-slate-900 mt-1">{analytics.uniqueVisitors}</h4>
+            </div>
+          </div>
+
+          <div className="space-y-3 pt-2">
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-[10px] font-bold text-slate-700 flex items-center gap-1">
+                  <Laptop size={11} className="text-slate-800" /> Desktop
+                </span>
+                <span className="text-[10px] font-bold text-slate-600">{analytics.deviceStats?.desktopPercent || 0}%</span>
+              </div>
+              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                <div className="bg-rose-600 h-full rounded-full transition-all duration-500" style={{ width: `${analytics.deviceStats?.desktopPercent || 0}%` }} />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-[10px] font-bold text-slate-700 flex items-center gap-1">
+                  <Smartphone size={11} className="text-slate-800" /> Mobile
+                </span>
+                <span className="text-[10px] font-bold text-slate-600">{analytics.deviceStats?.mobilePercent || 0}%</span>
+              </div>
+              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                <div className="bg-rose-600 h-full rounded-full transition-all duration-500" style={{ width: `${analytics.deviceStats?.mobilePercent || 0}%` }} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Col 2: Top Geographies */}
+        <div className="space-y-4 border-t md:border-t-0 md:border-l border-slate-50 md:pl-6">
+          <div>
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <Users size={15} className="text-rose-600" /> Top Geographies
+            </h3>
+            <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">Country Breakdown</p>
+          </div>
+
+          <div className="space-y-2.5">
+            {analytics.countries?.length > 0 ? (
+              analytics.countries.map((country, index) => (
+                <div key={index} className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <img 
+                      src={`https://flagcdn.com/16x12/${country.code}.png`} 
+                      alt={country.country} 
+                      className="w-4 h-3 rounded shadow-sm opacity-90 object-cover"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                    <span className="text-[11px] font-bold text-slate-700">{country.country}</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-100">{country.count} visits</span>
+                </div>
+              ))
+            ) : (
+              <p className="text-[10px] font-medium text-slate-500 italic">No geo-traffic captured yet.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Col 3: Real-Time Traffic Feed */}
+        <div className="space-y-4 border-t md:border-t-0 md:border-l border-slate-50 md:pl-6">
+          <div>
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <Activity size={15} className="text-rose-600 animate-pulse" /> Live Traffic Feed
+            </h3>
+            <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">Last 6 visitor hits</p>
+          </div>
+
+          <div className="space-y-2 max-h-36 overflow-y-auto pr-1 custom-scrollbar">
+            {analytics.recentVisitors?.length > 0 ? (
+              analytics.recentVisitors.map((visitor, index) => (
+                <div key={index} className="flex items-center justify-between text-[10px] bg-slate-50/50 border border-slate-100 p-1.5 rounded">
+                  <div className="flex items-center gap-1.5 truncate">
+                    <img 
+                      src={`https://flagcdn.com/16x12/${visitor.countryCode ? visitor.countryCode.toLowerCase() : 'un'}.png`} 
+                      alt={visitor.country} 
+                      className="w-3.5 h-2.5 rounded shadow-sm opacity-90 object-cover shrink-0"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                    <span className="font-bold text-slate-800 truncate">{visitor.city || visitor.country}</span>
+                    <span className="text-[8px] font-bold text-slate-400">({visitor.browser})</span>
+                  </div>
+                  <span className="text-[8px] font-black text-rose-500 uppercase shrink-0 tracking-wider">
+                    {new Date(visitor.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <p className="text-[10px] font-medium text-slate-500 italic">Listening for visitors...</p>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* ── Live Inbox Feeds & System Health Center ── */}

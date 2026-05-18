@@ -248,17 +248,46 @@ const BlogManager = () => {
 
                 <div className="space-y-1 mb-4">
                   <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Cover Image (any format, auto-converted)</label>
-                  <div className="flex items-center gap-4">
+                  <div 
+                    className="border-2 border-dashed border-slate-200 hover:border-rose-500 rounded p-6 bg-slate-50/50 hover:bg-white flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 relative group"
+                    onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('border-rose-500', 'bg-rose-50/20'); }}
+                    onDragLeave={(e) => { e.preventDefault(); e.currentTarget.classList.remove('border-rose-500', 'bg-rose-50/20'); }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove('border-rose-500', 'bg-rose-50/20');
+                      const file = e.dataTransfer.files[0];
+                      if (file && file.type.startsWith('image/')) {
+                        setFormData({ ...formData, image: file });
+                        setPreviewImage(URL.createObjectURL(file));
+                      }
+                    }}
+                    onClick={() => document.getElementById('cover-image-upload').click()}
+                  >
                     <input
+                      id="cover-image-upload"
                       type="file"
                       accept="image/*"
                       onChange={handleImageChange}
-                      className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded text-[13px] file:mr-4 file:py-1.5 file:px-4 file:rounded file:border-0 file:text-xs file:font-bold file:bg-rose-50 file:text-rose-600 hover:file:bg-rose-100 cursor-pointer"
+                      className="hidden"
                     />
-                    {previewImage && (
-                      <div className="w-14 h-14 rounded border border-slate-200 overflow-hidden bg-slate-50 flex-shrink-0">
+                    
+                    {previewImage ? (
+                      <div className="relative w-full h-32 rounded overflow-hidden border border-slate-100 flex items-center justify-center bg-slate-100">
                         <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-200">
+                          <span className="text-[10px] font-black uppercase text-white bg-slate-900/80 px-3 py-1.5 rounded tracking-widest">Change Image</span>
+                        </div>
                       </div>
+                    ) : (
+                      <>
+                        <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform duration-300">
+                          <ImageIcon size={20} />
+                        </div>
+                        <div className="text-center">
+                          <p className="text-xs font-black text-slate-700 tracking-tight">Drag & drop cover image here</p>
+                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">or click to browse from device</p>
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>

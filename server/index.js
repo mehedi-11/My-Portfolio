@@ -28,6 +28,8 @@ const Settings = require('./models/Settings');
 const ActivityLog = require('./models/ActivityLog');
 const Hire = require('./models/Hire');
 const Blog = require('./models/Blog');
+const Visitor = require('./models/Visitor');
+const http = require('http');
 
 // Helper to log activity
 const logActivity = async (action, details, category = 'CRUD', req = null) => {
@@ -36,6 +38,83 @@ const logActivity = async (action, details, category = 'CRUD', req = null) => {
     await ActivityLog.create({ action, details, category, ip });
   } catch (err) {
     console.error('Logging failed:', err);
+  }
+};
+
+// Helper to track visitors
+const trackVisitor = async (req, pageName = 'Portfolio Home') => {
+  try {
+    let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
+    if (ip.includes('::ffff:')) {
+      ip = ip.replace('::ffff:', '');
+    }
+    // Locally fallback to a Google IP for visual testing
+    if (ip === '127.0.0.1' || ip === '::1' || !ip) {
+      ip = '8.8.8.8';
+    }
+
+    const ua = req.headers['user-agent'] || '';
+    let device = 'Desktop';
+    if (/Mobi|Android|iPhone|iPad/i.test(ua)) {
+      device = 'Mobile';
+    }
+
+    let browser = 'Unknown';
+    if (ua.includes('Chrome')) browser = 'Chrome';
+    else if (ua.includes('Safari')) browser = 'Safari';
+    else if (ua.includes('Firefox')) browser = 'Firefox';
+    else if (ua.includes('Edge')) browser = 'Edge';
+
+    (async () => {
+      try {
+        const fifteenMinsAgo = new Date(Date.now() - 15 * 60 * 1000);
+        const recentLog = await Visitor.findOne({ ip, createdAt: { $gte: fifteenMinsAgo } });
+        if (recentLog) return;
+
+        http.get(`http://ip-api.com/json/${ip}`, (res) => {
+          let data = '';
+          res.on('data', chunk => data += chunk);
+          res.on('end', async () => {
+            try {
+              const geo = JSON.parse(data);
+              await Visitor.create({
+                ip,
+                country: geo.country || 'Unknown',
+                countryCode: geo.countryCode || 'UN',
+                city: geo.city || 'Unknown',
+                device,
+                browser,
+                page: pageName
+              });
+            } catch (e) {
+              await Visitor.create({
+                ip,
+                country: 'Unknown',
+                countryCode: 'UN',
+                city: 'Unknown',
+                device,
+                browser,
+                page: pageName
+              });
+            }
+          });
+        }).on('error', async () => {
+          await Visitor.create({
+            ip,
+            country: 'Unknown',
+            countryCode: 'UN',
+            city: 'Unknown',
+            device,
+            browser,
+            page: pageName
+          });
+        });
+      } catch (err) {
+        console.error('Geo IP tracking fail:', err);
+      }
+    })();
+  } catch (e) {
+    console.error('Visitor track fail:', e);
   }
 };
 
@@ -106,6 +185,9 @@ app.put('/api/auth/profile', auth, async (req, res) => {
 // --- Public Portfolio Route ---
 app.get('/api/portfolio', async (req, res) => {
   try {
+    // Non-blocking visitor tracking
+    trackVisitor(req, 'Portfolio Home');
+
     const [projects, experience, education] = await Promise.all([
       Project.find().sort('order'),
       Experience.find().sort('order'),
@@ -407,6 +489,110 @@ app.put('/api/settings', auth, async (req, res) => {
     res.json(settings);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// --- Advanced Analytics & Backup Center ---
+app.get('/api/analytics', auth, async (req, res) => {
+  try {
+    const [totalVisits, mobileVisits, desktopVisits, uniqueIps, recentVisitors, countryAggregation] = await Promise.all([
+      Visitor.countDocuments(),
+      Visitor.countDocuments({ device: 'Mobile' }),
+      Visitor.countDocuments({ device: 'Desktop' }),
+      Visitor.distinct('ip'),
+      Visitor.find().sort('-createdAt').limit(6),
+      Visitor.aggregate([
+        { $group: { _id: "$country", count: { $sum: 1 }, code: { $first: "$countryCode" } } },
+        { $sort: { count: -1 } },
+        { $limit: 5 }
+      ])
+    ]);
+
+    res.json({
+      totalVisits,
+      deviceStats: {
+        mobile: mobileVisits,
+        desktop: desktopVisits,
+        mobilePercent: totalVisits > 0 ? Math.round((mobileVisits / totalVisits) * 100) : 0,
+        desktopPercent: totalVisits > 0 ? Math.round((desktopVisits / totalVisits) * 100) : 0
+      },
+      uniqueVisitors: uniqueIps.length,
+      recentVisitors,
+      countries: countryAggregation.map(c => ({
+        country: c._id,
+        count: c.count,
+        code: c.code ? c.code.toLowerCase() : 'un'
+      }))
+    });
+  } catch (err) {
+    console.error('Analytics aggregation failed:', err);
+    res.status(500).json({ message: 'Analytics retrieval failed: ' + err.message });
+  }
+});
+
+app.get('/api/backup', auth, async (req, res) => {
+  try {
+    const [projects, skills, blogs, experiences, educations, settings] = await Promise.all([
+      Project.find(),
+      Skill.find(),
+      Blog.find(),
+      Experience.find(),
+      Education.find(),
+      Settings.findOne()
+    ]);
+
+    const backupData = {
+      version: '1.0.0',
+      timestamp: new Date().toISOString(),
+      projects,
+      skills,
+      blogs,
+      experiences,
+      educations,
+      settings: settings || {}
+    };
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', 'attachment; filename=mehedi_portfolio_backup.json');
+    res.json(backupData);
+  } catch (err) {
+    res.status(500).json({ message: 'Backup export failed' });
+  }
+});
+
+app.post('/api/backup/restore', auth, async (req, res) => {
+  try {
+    const { projects, skills, blogs, experiences, educations, settings } = req.body;
+
+    if (projects && Array.isArray(projects)) {
+      await Project.deleteMany({});
+      await Project.insertMany(projects);
+    }
+    if (skills && Array.isArray(skills)) {
+      await Skill.deleteMany({});
+      await Skill.insertMany(skills);
+    }
+    if (blogs && Array.isArray(blogs)) {
+      await Blog.deleteMany({});
+      await Blog.insertMany(blogs);
+    }
+    if (experiences && Array.isArray(experiences)) {
+      await Experience.deleteMany({});
+      await Experience.insertMany(experiences);
+    }
+    if (educations && Array.isArray(educations)) {
+      await Education.deleteMany({});
+      await Education.insertMany(educations);
+    }
+    if (settings && typeof settings === 'object') {
+      await Settings.deleteMany({});
+      await Settings.create(settings);
+    }
+
+    await logActivity('Restored Backup', 'All portfolio data was restored from JSON backup', 'Security', req);
+    res.json({ message: 'Backup restored successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Backup restoration failed: ' + err.message });
   }
 });
 
