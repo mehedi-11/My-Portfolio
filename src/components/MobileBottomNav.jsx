@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Home, User, FolderGit2, Cpu, Mail } from 'lucide-react';
+import { Home, User, Briefcase, Code, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const MobileBottomNav = () => {
@@ -8,8 +8,8 @@ const MobileBottomNav = () => {
   const navItems = [
     { id: 'home',     label: 'Home',     icon: Home,       href: '#' },
     { id: 'about',    label: 'About',    icon: User,       href: '#about' },
-    { id: 'projects', label: 'Projects', icon: FolderGit2, href: '#projects' },
-    { id: 'skills',   label: 'Skills',   icon: Cpu,        href: '#skills' },
+    { id: 'projects', label: 'Projects', icon: Briefcase,  href: '#projects' },
+    { id: 'skills',   label: 'Skills',   icon: Code,       href: '#skills' },
     { id: 'contact',  label: 'Contact',  icon: Mail,       href: '#contact' },
   ];
 
@@ -55,8 +55,8 @@ const MobileBottomNav = () => {
   };
 
   return (
-    <div className="fixed bottom-5 left-4 right-4 z-[99] lg:hidden">
-      <div className="bg-slate-950/80 backdrop-blur-xl border border-white/10 p-2.5 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex justify-between items-center max-w-md mx-auto relative">
+    <div className="fixed bottom-5 left-4 right-4 z-[999] lg:hidden">
+      <div className="bg-slate-950/90 backdrop-blur-xl border border-white/10 p-2.5 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.4)] flex justify-between items-center max-w-md mx-auto relative">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeSection === item.id;
