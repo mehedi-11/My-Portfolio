@@ -8,6 +8,7 @@ export const PortfolioProvider = ({ children }) => {
     projects: [],
     experience: [],
     education: [],
+    blogs: [],
     personalInfo: {},
     skills: {
       frontend: [],
@@ -22,12 +23,13 @@ export const PortfolioProvider = ({ children }) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [projectsRes, expRes, eduRes, skillsRes, settingsRes] = await Promise.all([
+        const [projectsRes, expRes, eduRes, skillsRes, settingsRes, blogsRes] = await Promise.all([
           portfolioAPI.getProjects(),
           portfolioAPI.getExperience(),
           portfolioAPI.getEducation(),
           portfolioAPI.getSkills(),
-          portfolioAPI.getSettings()
+          portfolioAPI.getSettings(),
+          import('../api').then(m => m.blogAPI.getBlogs())
         ]);
 
         const formattedSkills = {
@@ -53,6 +55,7 @@ export const PortfolioProvider = ({ children }) => {
           experience: expRes.data || [],
           education: eduRes.data || [],
           skills: formattedSkills,
+          blogs: blogsRes?.data || [],
           personalInfo: settingsRes.data || {}
         });
       } catch (err) {

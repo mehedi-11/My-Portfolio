@@ -69,4 +69,12 @@ export const settingsAPI = {
   clearActivityLogs: () => api.delete('/activity-logs'),
 };
 
+export const blogAPI = {
+  getBlogs: () => api.get('/blogs'),
+  getBlog: (slug) => api.get(`/blogs/${slug}`),
+  addBlog: (formData) => api.post('/blogs', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  updateBlog: (id, formData) => api.put(`/blogs/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  deleteBlog: (id) => api.delete(`/blogs/${id}`),
+};
+
 export default api;
