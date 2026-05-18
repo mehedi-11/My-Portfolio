@@ -188,7 +188,7 @@ const Dashboard = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 8, scale: 0.96 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl border border-slate-100 z-50 overflow-hidden"
+                    className="fixed sm:absolute top-[50px] sm:top-full right-4 sm:right-0 left-4 sm:left-auto mt-2 w-auto sm:w-80 bg-white rounded-xl border border-slate-100 z-50 overflow-hidden"
                   >
                     {/* Notify header */}
                     <div className="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between">
