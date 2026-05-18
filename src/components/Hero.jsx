@@ -23,29 +23,29 @@ const Hero = () => {
               <span className="w-10 h-[1px] bg-sky-600"></span>
               <span className="text-sky-600 font-bold tracking-[0.2em] uppercase text-[11px]">Hello, I am</span>
             </div>
-            
+
             <h1 className="text-5xl md:text-7xl font-black text-slate-900 leading-[0.95] mb-6 tracking-tighter">
               I'm <span className="text-sky-600">Mehedi</span>,<br />
               Web Developer.
             </h1>
-            
+
             <p className="text-lg text-slate-500 mb-8 max-w-lg leading-relaxed font-medium">
               I build clean, modern, and user-friendly websites that provide a <span className="text-slate-900 font-bold">smooth and fast</span> user experience.
             </p>
 
             <div className="flex flex-wrap gap-4 mb-10">
-              <motion.a 
+              <motion.a
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                href="#projects" 
+                href="#projects"
                 className="group relative px-7 py-3.5 bg-slate-900 text-white rounded-2xl font-bold text-sm flex items-center gap-3 overflow-hidden shadow-2xl shadow-slate-200"
               >
                 <span className="relative z-10">See My Projects</span>
                 <ArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={18} />
                 <div className="absolute inset-0 bg-sky-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               </motion.a>
-              
-              <motion.a 
+
+              <motion.a
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 href={personalInfo.cvPath}
@@ -58,19 +58,19 @@ const Hero = () => {
 
             <div className="flex items-center gap-6">
               <div className="flex -space-x-3">
-                 {[1,2,3].map(i => (
-                   <div key={i} className="w-9 h-9 rounded-full border-2 border-white bg-slate-200 overflow-hidden ring-4 ring-slate-50">
-                     <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="client" />
-                   </div>
-                 ))}
-                 <div className="w-9 h-9 rounded-full border-2 border-white bg-sky-600 flex items-center justify-center text-[9px] text-white font-bold ring-4 ring-slate-50">
-                   10+
-                 </div>
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="w-9 h-9 rounded-full border-2 border-white bg-slate-200 overflow-hidden ring-4 ring-slate-50">
+                    <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="client" />
+                  </div>
+                ))}
+                <div className="w-9 h-9 rounded-full border-2 border-white bg-sky-600 flex items-center justify-center text-[9px] text-white font-bold ring-4 ring-slate-50">
+                  10+
+                </div>
               </div>
               <div>
                 <p className="text-[13px] font-bold text-slate-900">10+ Happy Clients</p>
                 <div className="flex text-amber-400">
-                  {[1,2,3,4,5].map(i => <Sparkles key={i} size={10} fill="currentColor" />)}
+                  {[1, 2, 3, 4, 5].map(i => <Sparkles key={i} size={10} fill="currentColor" />)}
                 </div>
               </div>
             </div>
@@ -86,16 +86,16 @@ const Hero = () => {
             className="relative z-10"
           >
             <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl group">
-               <img 
-                 src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1000&auto=format&fit=crop" 
-                 alt="Mehedi Hasan" 
-                 className="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700"
-               />
-               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
+              <img
+                src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1000&auto=format&fit=crop"
+                alt="Mehedi Hasan"
+                className="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
             </div>
 
             {/* Decorative Floating Cards */}
-            <motion.div 
+            <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="absolute -top-8 -right-4 p-4 bg-white rounded-2xl shadow-xl z-20 flex items-center gap-3 border border-slate-50"
@@ -109,7 +109,7 @@ const Hero = () => {
               </div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
               className="absolute -bottom-8 -left-4 p-4 bg-white rounded-2xl shadow-xl z-20 flex items-center gap-3 border border-slate-50"

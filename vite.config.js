@@ -14,6 +14,8 @@ export default defineConfig({
         short_name: 'Admin',
         description: 'Dynamic portfolio management system',
         theme_color: '#0f172a',
+        start_url: '/admin',
+        display: 'standalone',
         icons: [
           {
             src: 'pwa-192x192.png',

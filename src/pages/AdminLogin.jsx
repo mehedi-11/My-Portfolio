@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Lock, User, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Lock, User, ArrowRight, Loader2, Eye, EyeOff, Download } from 'lucide-react';
 import { authAPI } from '../api';
 
 const AdminLogin = () => {
@@ -9,7 +9,25 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showInstall, setShowInstall] = useState(!!window.deferredPrompt);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handlePromptReady = () => setShowInstall(true);
+    window.addEventListener('pwa-prompt-ready', handlePromptReady);
+    return () => window.removeEventListener('pwa-prompt-ready', handlePromptReady);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (window.deferredPrompt) {
+      window.deferredPrompt.prompt();
+      const { outcome } = await window.deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setShowInstall(false);
+      }
+      window.deferredPrompt = null;
+    }
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -41,6 +59,16 @@ const AdminLogin = () => {
           </div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Admin Panel.</h1>
           <p className="text-slate-500 font-medium mt-2">Secure access for maintenance</p>
+          
+          {showInstall && (
+            <button
+              type="button"
+              onClick={handleInstallClick}
+              className="mt-6 px-5 py-2.5 bg-sky-50 text-sky-600 rounded text-[11px] font-black uppercase tracking-widest hover:bg-sky-100 transition-colors flex items-center justify-center gap-2 mx-auto border border-sky-100"
+            >
+              <Download size={14} /> Install Admin App
+            </button>
+          )}
         </div>
 
         {error && (
