@@ -273,7 +273,7 @@ const Dashboard = () => {
         </header>
 
         {/* Content */}
-        <div className="p-6 md:p-8 overflow-y-auto flex-1 bg-white">
+        <div className="p-6 md:p-8 overflow-y-auto flex-1 bg-white pb-20 lg:pb-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -285,6 +285,39 @@ const Dashboard = () => {
               <ActiveComponent fetchNotifications={fetchNotifications} setActiveTab={setActiveTab} />
             </motion.div>
           </AnimatePresence>
+        </div>
+
+        {/* Mobile Sticky Footer Menu */}
+        <div className="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-100 flex justify-around items-center z-[50] lg:hidden px-2 shadow-lg shadow-slate-150/40">
+          {[
+            { id: 'overview',   label: 'Home',      icon: LayoutDashboard },
+            { id: 'projects',   label: 'Projects',  icon: Layers },
+            { id: 'blogs',      label: 'Blogs',     icon: FileText },
+            { id: 'messages',   label: 'Contact',   icon: MessageSquare, badge: notifications.messages },
+            { id: 'proposals',  label: 'Hire',      icon: UserPlus,      badge: notifications.proposals },
+          ].map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className="flex-1 flex flex-col items-center justify-center h-full relative"
+              >
+                <div className={`relative p-1 transition-transform duration-200 ${isActive ? 'text-rose-600 scale-110' : 'text-slate-500 hover:text-slate-900'}`}>
+                  <Icon size={18} className={isActive ? 'stroke-[2.5px]' : 'stroke-[2px]'} />
+                  {item.badge > 0 && (
+                    <span className="absolute -top-1.5 -right-2 min-w-[14px] h-[14px] px-0.5 bg-rose-600 text-[8px] text-white flex items-center justify-center rounded-full font-black">
+                      {item.badge > 99 ? '99+' : item.badge}
+                    </span>
+                  )}
+                </div>
+                <span className={`text-[9px] font-black uppercase tracking-wider mt-1 transition-colors duration-200 ${isActive ? 'text-rose-600 font-extrabold' : 'text-slate-400'}`}>
+                  {item.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </main>
     </div>
