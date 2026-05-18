@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import { blogAPI } from '../api';
-import 'react-quill/dist/quill.snow.css'; // For basic styling of quill output
+import 'react-quill-new/dist/quill.snow.css'; // For basic styling of quill output
 
 const API_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
