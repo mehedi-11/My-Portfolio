@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { usePortfolio } from '../context/PortfolioContext';
 import { 
   ArrowLeft, 
@@ -49,6 +50,12 @@ const ProjectView = () => {
 
   return (
     <div className="min-h-screen bg-white pb-20 font-inter">
+      <Helmet>
+        <title>{project.title} | Mehedi Hasan</title>
+        <meta name="description" content={project.description} />
+        <meta property="og:title" content={project.title} />
+        <meta property="og:description" content={project.description} />
+      </Helmet>
       <div className="bg-white/90 backdrop-blur-md border-b border-slate-100 py-4 sticky top-0 z-[100]">
         <div className="container-custom flex items-center justify-between">
           <button 

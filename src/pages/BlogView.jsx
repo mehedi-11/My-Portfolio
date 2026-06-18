@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import { blogAPI } from '../api';
 import 'react-quill-new/dist/quill.snow.css'; // For basic styling of quill output
@@ -39,6 +40,12 @@ const BlogView = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 pb-20">
+      <Helmet>
+        <title>{blog.title} | Mehedi Hasan</title>
+        <meta name="description" content={blog.shortDescription} />
+        <meta property="og:title" content={blog.title} />
+        <meta property="og:description" content={blog.shortDescription} />
+      </Helmet>
       {/* Header Section */}
       <div className="bg-slate-50 dark:bg-slate-900 pt-32 pb-20 border-b border-slate-100 dark:border-slate-800">
         <div className="container-custom max-w-4xl">
