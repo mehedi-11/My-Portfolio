@@ -38,25 +38,25 @@ const BlogView = () => {
   if (!blog) return null;
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-white dark:bg-slate-950 pb-20">
       {/* Header Section */}
-      <div className="bg-slate-50 pt-32 pb-20 border-b border-slate-100">
+      <div className="bg-slate-50 dark:bg-slate-900 pt-32 pb-20 border-b border-slate-100 dark:border-slate-800">
         <div className="container-custom max-w-4xl">
-          <Link to="/blogs" className="flex items-center gap-2 text-slate-400 hover:text-sky-600 transition-all font-bold text-xs uppercase tracking-widest mb-8 group w-max">
+          <Link to="/blogs" className="flex items-center gap-2 text-slate-400 dark:text-slate-500 hover:text-sky-600 dark:hover:text-sky-400 transition-all font-bold text-xs uppercase tracking-widest mb-8 group w-max">
              <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Blogs
           </Link>
 
-          <div className="flex items-center gap-4 mb-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+          <div className="flex items-center gap-4 mb-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
             <span className="flex items-center gap-1.5"><Calendar size={14} /> {new Date(blog.createdAt).toLocaleDateString()}</span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[1.1] mb-8">
+          <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter leading-[1.1] mb-8">
             {blog.title}
           </h1>
 
           <div className="flex flex-wrap gap-2">
             {blog.tags && blog.tags.map((tag, i) => (
-              <span key={i} className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-sky-600 bg-sky-50 px-3 py-1.5 rounded">
+              <span key={i} className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/30 px-3 py-1.5 rounded">
                 <Tag size={12} /> {tag}
               </span>
             ))}
@@ -67,13 +67,13 @@ const BlogView = () => {
 
       {/* Content Section */}
       <div className="container-custom max-w-3xl">
-        <div className="text-lg text-slate-500 font-medium leading-relaxed mb-12 pb-12 border-b border-slate-100">
+        <div className="text-lg text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-12 pb-12 border-b border-slate-100 dark:border-slate-800">
           {blog.shortDescription}
         </div>
 
         {/* Render Rich Text */}
         <div 
-          className="prose prose-slate prose-lg max-w-none prose-headings:font-black prose-headings:tracking-tighter prose-a:text-sky-600 hover:prose-a:text-sky-700 ql-editor px-0"
+          className="text-slate-700 dark:text-slate-300 ql-editor px-0"
           dangerouslySetInnerHTML={{ __html: blog.details }} 
         />
       </div>

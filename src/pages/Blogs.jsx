@@ -17,16 +17,16 @@ const Blogs = () => {
   ) || [];
 
   return (
-    <div className="min-h-screen bg-[#fcfcfd] pb-20">
-      <div className="bg-white border-b border-slate-100 pt-32 pb-12">
+    <div className="min-h-screen bg-[#fcfcfd] dark:bg-slate-950 pb-20">
+      <div className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 pt-32 pb-12">
         <div className="container-custom">
-          <Link to="/" className="flex items-center gap-2 text-slate-400 hover:text-sky-600 transition-all font-bold text-xs uppercase tracking-widest mb-8 group w-max">
+          <Link to="/" className="flex items-center gap-2 text-slate-400 dark:text-slate-500 hover:text-sky-600 dark:hover:text-sky-400 transition-all font-bold text-xs uppercase tracking-widest mb-8 group w-max">
             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Home
           </Link>
-          <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter mb-6">
+          <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter mb-6">
             All <span className="text-sky-600">Blogs.</span>
           </h1>
-          <p className="text-slate-500 font-medium max-w-xl">
+          <p className="text-slate-500 dark:text-slate-400 font-medium max-w-xl">
             Thoughts, insights, and tutorials about web development and technology.
           </p>
         </div>
@@ -34,13 +34,13 @@ const Blogs = () => {
 
       <div className="container-custom py-12">
         <div className="relative w-full md:max-w-md mb-12">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" size={18} />
           <input 
             type="text"
             placeholder="Search blogs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-6 py-4 bg-white border border-slate-100 rounded-2xl shadow-sm outline-none focus:border-sky-500 transition-all text-sm font-medium"
+            className="w-full pl-12 pr-6 py-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm outline-none focus:border-sky-500 transition-all text-sm font-medium text-slate-900 dark:text-white"
           />
         </div>
 
@@ -51,35 +51,35 @@ const Blogs = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredBlogs.map((blog, index) => (
-              <motion.div 
-                key={blog._id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="bg-white p-6 rounded-[2.5rem] border border-slate-100 hover:border-sky-200 transition-all hover:shadow-2xl hover:shadow-sky-500/10 flex flex-col h-full shadow-sm group"
-              >
+                <motion.div 
+                  key={blog._id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 hover:border-sky-200 transition-all hover:shadow-2xl hover:shadow-sky-500/10 flex flex-col h-full shadow-sm group"
+                >
 
 
-                <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-3">
-                  <Calendar size={12} /> {new Date(blog.createdAt).toLocaleDateString()}
-                </div>
+                  <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-3">
+                    <Calendar size={12} /> {new Date(blog.createdAt).toLocaleDateString()}
+                  </div>
 
-                <Link to={`/blog/${blog.slug}`}>
-                  <h3 className="text-xl font-black text-slate-900 mb-3 group-hover:text-sky-600 transition-colors tracking-tight line-clamp-2">
-                    {blog.title}
-                  </h3>
-                </Link>
+                  <Link to={`/blog/${blog.slug}`}>
+                    <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors tracking-tight line-clamp-2">
+                      {blog.title}
+                    </h3>
+                  </Link>
 
-                <p className="text-sm text-slate-500 font-medium leading-relaxed mb-6 line-clamp-3">
-                  {blog.shortDescription}
-                </p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-6 line-clamp-3">
+                    {blog.shortDescription}
+                  </p>
 
-                <div className="mt-auto flex flex-wrap gap-2">
-                  {blog.tags && blog.tags.map((tag, i) => (
-                    <span key={i} className="text-[9px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 px-3 py-1 rounded border border-slate-100">
-                      {tag}
-                    </span>
-                  ))}
+                  <div className="mt-auto flex flex-wrap gap-2">
+                    {blog.tags && blog.tags.map((tag, i) => (
+                      <span key={i} className="text-[9px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 px-3 py-1 rounded border border-slate-100 dark:border-slate-700">
+                        {tag}
+                      </span>
+                    ))}
                 </div>
               </motion.div>
             ))}
@@ -88,8 +88,8 @@ const Blogs = () => {
 
         {!loading && filteredBlogs.length === 0 && (
           <div className="text-center py-32">
-            <h3 className="text-2xl font-black text-slate-900 mb-2">No blogs found</h3>
-            <p className="text-slate-500 font-medium">Try adjusting your search criteria.</p>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">No blogs found</h3>
+            <p className="text-slate-500 dark:text-slate-400 font-medium">Try adjusting your search criteria.</p>
           </div>
         )}
       </div>
