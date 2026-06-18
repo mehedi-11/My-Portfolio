@@ -64,16 +64,6 @@ const BlogView = () => {
         </div>
       </div>
 
-      {/* Featured Image */}
-      <div className="container-custom max-w-5xl -mt-10 mb-16 relative z-10">
-        <div className="w-full aspect-[2/1] bg-slate-100 rounded-3xl overflow-hidden shadow-2xl shadow-slate-200/50 border border-white">
-          <img 
-            src={`${API_URL}/uploads/blogs/${blog.image}`} 
-            alt={blog.title} 
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
 
       {/* Content Section */}
       <div className="container-custom max-w-3xl">

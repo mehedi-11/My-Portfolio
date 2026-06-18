@@ -15,9 +15,8 @@ const BlogManager = () => {
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState({ text: '', type: '' });
   const [formData, setFormData] = useState({
-    title: '', slug: '', shortDescription: '', details: '', tags: '', image: null
+    title: '', slug: '', shortDescription: '', details: '', tags: ''
   });
-  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => { fetchBlogs(); }, []);
 
@@ -32,36 +31,21 @@ const BlogManager = () => {
     }
   }
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, image: file });
-      setPreviewImage(URL.createObjectURL(file));
-    }
-  };
-
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
 
-    const submitData = new FormData();
-    submitData.append('title', formData.title);
-    submitData.append('slug', formData.slug);
-    submitData.append('shortDescription', formData.shortDescription);
-    submitData.append('details', formData.details);
-
     const tagsArray = typeof formData.tags === 'string'
       ? formData.tags.split(',').map(s => s.trim()).filter(s => s)
       : formData.tags;
-    submitData.append('tags', JSON.stringify(tagsArray));
 
-    if (formData.image) {
-      submitData.append('image', formData.image);
-    } else if (!editingId) {
-      setLoading(false);
-      setMessage({ text: 'Cover image is required for new blog', type: 'error' });
-      return;
-    }
+    const submitData = {
+      title: formData.title,
+      slug: formData.slug,
+      shortDescription: formData.shortDescription,
+      details: formData.details,
+      tags: JSON.stringify(tagsArray)
+    };
 
     try {
       if (editingId) {
@@ -89,10 +73,8 @@ const BlogManager = () => {
       slug: blog.slug,
       shortDescription: blog.shortDescription,
       details: blog.details,
-      tags: blog.tags ? blog.tags.join(', ') : '',
-      image: null
+      tags: blog.tags ? blog.tags.join(', ') : ''
     });
-    setPreviewImage(`${API_URL}/uploads/blogs/${blog.image}`);
     setEditingId(blog._id);
     setShowModal(true);
   };
@@ -112,8 +94,7 @@ const BlogManager = () => {
   }
 
   const resetForm = () => {
-    setFormData({ title: '', slug: '', shortDescription: '', details: '', tags: '', image: null });
-    setPreviewImage(null);
+    setFormData({ title: '', slug: '', shortDescription: '', details: '', tags: '' });
     setEditingId(null);
   };
 
@@ -147,7 +128,6 @@ const BlogManager = () => {
           <table className="w-full text-left">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100">
-                <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Cover</th>
                 <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Blog Details</th>
                 <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest">Date</th>
                 <th className="px-6 py-4 text-[10px] font-black text-slate-600 uppercase tracking-widest text-right">Actions</th>
@@ -156,13 +136,6 @@ const BlogManager = () => {
             <tbody className="divide-y divide-slate-50">
               {blogs.map((blog) => (
                 <tr key={blog._id} className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-6 py-4">
-                    <div className="w-12 h-12 rounded bg-slate-50 border border-slate-100 overflow-hidden flex items-center justify-center">
-                      {blog.image
-                        ? <img src={`${API_URL}/uploads/blogs/${blog.image}`} alt={blog.title} className="w-full h-full object-cover" />
-                        : <ImageIcon size={20} className="text-slate-400" />}
-                    </div>
-                  </td>
                   <td className="px-6 py-4">
                     <span className="text-[13px] font-bold text-slate-900 block">{blog.title}</span>
                     <span className="text-[10px] text-slate-500 font-medium tracking-tight line-clamp-1">{blog.shortDescription}</span>
@@ -246,51 +219,7 @@ const BlogManager = () => {
                   />
                 </div>
 
-                <div className="space-y-1 mb-4">
-                  <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Cover Image (any format, auto-converted)</label>
-                  <div 
-                    className="border-2 border-dashed border-slate-200 hover:border-rose-500 rounded p-6 bg-slate-50/50 hover:bg-white flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 relative group"
-                    onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('border-rose-500', 'bg-rose-50/20'); }}
-                    onDragLeave={(e) => { e.preventDefault(); e.currentTarget.classList.remove('border-rose-500', 'bg-rose-50/20'); }}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      e.currentTarget.classList.remove('border-rose-500', 'bg-rose-50/20');
-                      const file = e.dataTransfer.files[0];
-                      if (file && file.type.startsWith('image/')) {
-                        setFormData({ ...formData, image: file });
-                        setPreviewImage(URL.createObjectURL(file));
-                      }
-                    }}
-                    onClick={() => document.getElementById('cover-image-upload').click()}
-                  >
-                    <input
-                      id="cover-image-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                    />
-                    
-                    {previewImage ? (
-                      <div className="relative w-full h-32 rounded overflow-hidden border border-slate-100 flex items-center justify-center bg-slate-100">
-                        <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-200">
-                          <span className="text-[10px] font-black uppercase text-white bg-slate-900/80 px-3 py-1.5 rounded tracking-widest">Change Image</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform duration-300">
-                          <ImageIcon size={20} />
-                        </div>
-                        <div className="text-center">
-                          <p className="text-xs font-black text-slate-700 tracking-tight">Drag & drop cover image here</p>
-                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">or click to browse from device</p>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
+
 
                 <div className="space-y-1 mb-4">
                   <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1">Tags (comma separated)</label>

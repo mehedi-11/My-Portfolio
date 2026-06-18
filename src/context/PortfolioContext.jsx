@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { portfolioAPI } from '../api';
+import { portfolioAPI, blogAPI } from '../api';
 
 const PortfolioContext = createContext();
 
@@ -29,7 +29,7 @@ export const PortfolioProvider = ({ children }) => {
           portfolioAPI.getEducation(),
           portfolioAPI.getSkills(),
           portfolioAPI.getSettings(),
-          import('../api').then(m => m.blogAPI.getBlogs())
+          blogAPI.getBlogs()
         ]);
 
         const formattedSkills = {

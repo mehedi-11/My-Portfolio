@@ -41,15 +41,10 @@ const BlogPreview = () => {
               transition={{ delay: index * 0.1 }}
               className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl transition-all group flex flex-col h-full"
             >
-              <Link to={`/blog/${blog.slug}`} className="block relative h-48 overflow-hidden bg-slate-100">
-                <img 
-                  src={`${API_URL}/uploads/blogs/${blog.image}`} 
-                  alt={blog.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-4 left-4 flex gap-2">
+              <Link to={`/blog/${blog.slug}`} className="block relative pt-6 px-6">
+                <div className="flex gap-2">
                   {blog.tags && blog.tags.slice(0, 2).map((tag, i) => (
-                    <span key={i} className="bg-white/90 backdrop-blur px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-sky-600 rounded">
+                    <span key={i} className="bg-slate-100 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-sky-600 rounded">
                       {tag}
                     </span>
                   ))}

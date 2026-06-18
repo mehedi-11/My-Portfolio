@@ -58,13 +58,7 @@ const Blogs = () => {
                 transition={{ duration: 0.3, delay: index * 0.05 }}
                 className="bg-white p-6 rounded-[2.5rem] border border-slate-100 hover:border-sky-200 transition-all hover:shadow-2xl hover:shadow-sky-500/10 flex flex-col h-full shadow-sm group"
               >
-                <Link to={`/blog/${blog.slug}`} className="block relative h-56 rounded-3xl overflow-hidden bg-slate-100 mb-6">
-                  <img 
-                    src={`${API_URL}/uploads/blogs/${blog.image}`} 
-                    alt={blog.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </Link>
+
 
                 <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-3">
                   <Calendar size={12} /> {new Date(blog.createdAt).toLocaleDateString()}

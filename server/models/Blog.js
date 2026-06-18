@@ -21,10 +21,7 @@ const blogSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  image: {
-    type: String, // Filename of the uploaded image
-    required: true
-  },
+
   tags: {
     type: [String],
     default: []

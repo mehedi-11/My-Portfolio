@@ -4,17 +4,16 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const sharp = require('sharp');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 
-const uploadDir = path.join(__dirname, 'uploads', 'blogs');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+if (!process.env.JWT_SECRET || !process.env.MONGODB_URI) {
+  console.error('FATAL ERROR: JWT_SECRET or MONGODB_URI is not defined.');
+  process.exit(1);
 }
-
-const upload = multer({ storage: multer.memoryStorage() });
 
 const auth = require('./middleware/auth');
 const User = require('./models/User');
@@ -119,16 +118,24 @@ const trackVisitor = async (req, pageName = 'Portfolio Home') => {
 };
 
 const app = express();
+app.set('trust proxy', 1);
+app.use(helmet());
+app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(cors());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { message: 'Too many login attempts from this IP, please try again after 15 minutes' }
+});
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch(err => console.error('MongoDB connection error:', err));
 
 // --- Auth Routes ---
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', loginLimiter, async (req, res) => {
   const { username, password } = req.body;
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
@@ -243,29 +250,11 @@ app.get('/api/blogs/:slug', async (req, res) => {
   }
 });
 
-app.post('/api/blogs', auth, upload.single('image'), async (req, res) => {
+app.post('/api/blogs', auth, async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'Cover Image is required' });
-    }
-
-    let imageFilename = Date.now() + '-' + Math.round(Math.random() * 1E9) + '.svg';
-    if (req.file.mimetype === 'image/svg+xml') {
-      fs.writeFileSync(path.join(uploadDir, imageFilename), req.file.buffer);
-    } else {
-      const webpBuffer = await sharp(req.file.buffer)
-        .resize(1200, 600, { fit: 'inside', withoutEnlargement: true })
-        .webp({ quality: 60 })
-        .toBuffer();
-      const base64Image = webpBuffer.toString('base64');
-      const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 600"><image href="data:image/webp;base64,${base64Image}" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" /></svg>`;
-      fs.writeFileSync(path.join(uploadDir, imageFilename), svgContent);
-    }
-
     const newBlog = new Blog({
       ...req.body,
-      tags: req.body.tags ? JSON.parse(req.body.tags) : [],
-      image: imageFilename
+      tags: req.body.tags && typeof req.body.tags === 'string' ? JSON.parse(req.body.tags) : (req.body.tags || [])
     });
     await newBlog.save();
     await logActivity('Added Blog', `Title: ${req.body.title}`, 'CRUD', req);
@@ -275,27 +264,11 @@ app.post('/api/blogs', auth, upload.single('image'), async (req, res) => {
   }
 });
 
-app.put('/api/blogs/:id', auth, upload.single('image'), async (req, res) => {
+app.put('/api/blogs/:id', auth, async (req, res) => {
   try {
     const updateData = { ...req.body };
-    if (req.body.tags) {
-      updateData.tags = JSON.parse(req.body.tags);
-    }
-    
-    if (req.file) {
-      let imageFilename = Date.now() + '-' + Math.round(Math.random() * 1E9) + '.svg';
-      if (req.file.mimetype === 'image/svg+xml') {
-        fs.writeFileSync(path.join(uploadDir, imageFilename), req.file.buffer);
-      } else {
-        const webpBuffer = await sharp(req.file.buffer)
-          .resize(1200, 600, { fit: 'inside', withoutEnlargement: true })
-          .webp({ quality: 60 })
-          .toBuffer();
-        const base64Image = webpBuffer.toString('base64');
-        const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 600"><image href="data:image/webp;base64,${base64Image}" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" /></svg>`;
-        fs.writeFileSync(path.join(uploadDir, imageFilename), svgContent);
-      }
-      updateData.image = imageFilename;
+    if (req.body.tags && typeof req.body.tags === 'string') {
+      try { updateData.tags = JSON.parse(req.body.tags); } catch(e) {}
     }
 
     const updated = await Blog.findByIdAndUpdate(req.params.id, updateData, { new: true });
@@ -308,11 +281,7 @@ app.put('/api/blogs/:id', auth, upload.single('image'), async (req, res) => {
 
 app.delete('/api/blogs/:id', auth, async (req, res) => {
   try {
-    const blog = await Blog.findByIdAndDelete(req.params.id);
-    if (blog && blog.image) {
-      const imgPath = path.join(uploadDir, blog.image);
-      if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-    }
+    await Blog.findByIdAndDelete(req.params.id);
     await logActivity('Deleted Blog', `ID: ${req.params.id}`, 'CRUD', req);
     res.json({ message: 'Deleted' });
   } catch (err) {
